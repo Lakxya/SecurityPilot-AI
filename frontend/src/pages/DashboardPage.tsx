@@ -7,6 +7,7 @@ import { DashboardStats } from '../components/dashboard/DashboardStats';
 import { RecentProjectsGrid } from '../components/dashboard/RecentProjectsGrid';
 import { CreateProjectModal } from '../components/dashboard/CreateProjectModal';
 import { CommandSearchModal } from '../components/dashboard/CommandSearchModal';
+import { DocumentWorkspace } from '../components/workspace/DocumentWorkspace';
 import { Badge } from '../components/common/Badge';
 
 export function DashboardPage() {
@@ -15,6 +16,10 @@ export function DashboardPage() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isCommandSearchOpen, setIsCommandSearchOpen] = useState(false);
+
+  // Active Project Workspace View State
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [selectedProjectName, setSelectedProjectName] = useState<string>('');
 
   // Global Keyboard Shortcut (Cmd+K / Ctrl+K) Listener
   useEffect(() => {
@@ -27,6 +32,21 @@ export function DashboardPage() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  const handleOpenWorkspace = (id: string, name: string) => {
+    setSelectedProjectId(id);
+    setSelectedProjectName(name);
+  };
+
+  if (selectedProjectId) {
+    return (
+      <DocumentWorkspace
+        projectId={selectedProjectId}
+        projectName={selectedProjectName}
+        onBackToDashboard={() => setSelectedProjectId(null)}
+      />
+    );
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-950 text-slate-100 font-sans selection:bg-indigo-500/30">
@@ -56,7 +76,7 @@ export function DashboardPage() {
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <Badge variant="emerald" size="sm">
-                    Sprint 4 Dashboard Shell Active
+                    Sprint 7 Document Workspace Engine Active
                   </Badge>
                   <span className="text-[11px] font-mono text-slate-400">
                     Role Scope: {user?.role || 'SECURITY_ENGINEER'}
@@ -66,7 +86,7 @@ export function DashboardPage() {
                   Welcome back, {user?.full_name || 'Security Engineer'}
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-400 max-w-2xl leading-relaxed">
-                  Your authenticated SecurityPilotAI workspace is initialized. Ready to generate, inspect, and audit your security architecture blueprints.
+                  Your authenticated SecurityPilotAI workspace is initialized. Ready to generate, inspect, and audit your 13 security architecture blueprints.
                 </p>
               </div>
             </div>
@@ -76,7 +96,10 @@ export function DashboardPage() {
           <DashboardStats />
 
           {/* Recent Security Projects Grid */}
-          <RecentProjectsGrid onNewProjectClick={() => setIsCreateModalOpen(true)} />
+          <RecentProjectsGrid
+            onNewProjectClick={() => setIsCreateModalOpen(true)}
+            onOpenWorkspace={handleOpenWorkspace}
+          />
         </main>
 
         {/* Status Footer */}

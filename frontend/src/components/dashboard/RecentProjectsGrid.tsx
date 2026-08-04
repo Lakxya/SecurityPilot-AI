@@ -15,9 +15,10 @@ export interface ProjectItem {
 
 export interface RecentProjectsGridProps {
   onNewProjectClick: () => void;
+  onOpenWorkspace?: (projectId: string, projectName: string) => void;
 }
 
-export function RecentProjectsGrid({ onNewProjectClick }: RecentProjectsGridProps) {
+export function RecentProjectsGrid({ onNewProjectClick, onOpenWorkspace }: RecentProjectsGridProps) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const sampleProjects: ProjectItem[] = [
@@ -87,7 +88,10 @@ export function RecentProjectsGrid({ onNewProjectClick }: RecentProjectsGridProp
           <Card key={project.id} className="flex flex-col justify-between p-6">
             <CardHeader>
               <div className="flex items-start justify-between gap-2 mb-2">
-                <CardTitle className="text-base font-bold text-white hover:text-indigo-400 transition-colors cursor-pointer">
+                <CardTitle
+                  onClick={() => onOpenWorkspace && onOpenWorkspace(project.id, project.name)}
+                  className="text-base font-bold text-white hover:text-indigo-400 transition-colors cursor-pointer"
+                >
                   {project.name}
                 </CardTitle>
                 <Badge variant="emerald" size="sm">
@@ -130,7 +134,11 @@ export function RecentProjectsGrid({ onNewProjectClick }: RecentProjectsGridProp
 
             <CardFooter className="mt-4 pt-4 border-t border-slate-800/80 flex items-center justify-between">
               <span className="text-[10px] text-slate-400 font-mono">Updated {project.updatedAt}</span>
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onOpenWorkspace && onOpenWorkspace(project.id, project.name)}
+              >
                 Open Workspace →
               </Button>
             </CardFooter>

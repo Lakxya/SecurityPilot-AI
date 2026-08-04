@@ -1,4 +1,5 @@
 import pytest
+import json
 from httpx import AsyncClient, ASGITransport
 from app.main import app
 from app.core.database import engine, Base
@@ -48,7 +49,7 @@ async def test_generation_sse_stream_and_persistence():
         doc_data = doc_res.json()
         assert doc_data["doc_type"] == "README"
         assert doc_data["file_path"] == "README.md"
-        assert "Security Architecture Specification" in doc_data["content"]
+        assert "FinTech Auth Engine" in doc_data["content"]
 
         # 5. Test Document Content Update
         update_res = await ac.put(f"/api/v1/generation/{project_id}/docs/README", json={

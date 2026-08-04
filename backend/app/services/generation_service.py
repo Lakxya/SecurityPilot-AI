@@ -30,7 +30,12 @@ class GenerationService:
         provider = LLMFactory.get_provider(provider_name)
 
         full_content = []
-        async for chunk in provider.generate_stream(user_prompt, system_prompt):
+        async for chunk in provider.generate_stream(
+            prompt=user_prompt,
+            system_prompt=system_prompt,
+            project=project,
+            doc_type=doc_type,
+        ):
             full_content.append(chunk)
             yield chunk
 
