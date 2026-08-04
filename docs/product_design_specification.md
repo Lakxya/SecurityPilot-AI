@@ -320,17 +320,17 @@ Sprint 3: Authentication & User Management
 ├── Password reset & Magic Link flows
 └── Protected route guards
 
-Sprint 4: Main Application Dashboard
+Sprint 4: Main Application Dashboard (COMPLETED)
 ├── Dashboard shell layout & Top Navigation bar
 ├── Collapsible Sidebar navigation
 ├── Recent Projects grid view & status metrics
 └── Project creation 3-step wizard modal
 
-Sprint 5: Core Project Workspace
-├── IDE multi-tab document interface
-├── Monaco/CodeMirror editor integration
-├── Markdown viewer with Mermaid.js diagram renderer
-└── Document split-pane toggle
+Sprint 5: Project Management & Workspace Module (COMPLETED)
+├── Projects & GeneratedDocuments database models
+├── ProjectRepository & ProjectService business logic
+├── RESTful API Controllers (/api/v1/projects)
+└── Frontend projectService & types integration
 
 Sprint 6: Document Generator Engine
 ├── Frontend state management for 13 document modules

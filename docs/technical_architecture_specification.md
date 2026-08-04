@@ -445,10 +445,10 @@ Developer Push ──► GitHub Actions CI/CD Pipeline
 | Sprint | Focus Area | Technical Deliverables |
 | :--- | :--- | :--- |
 | **Sprint 1** | **Scaffolding (Done)** | React + Vite + TS frontend foundation, Tailwind CSS v4 design tokens, initial folder hierarchy. |
-| **Sprint 2** | **Backend Core & Database** | FastAPI application setup, PostgreSQL 16 ORM models, Alembic migrations, Redis caching layer. |
-| **Sprint 3** | **Auth & User System** | RS256 JWT authentication, HttpOnly refresh cookies, RBAC authorization, User API endpoints. |
-| **Sprint 4** | **Project Workspace API** | Project CRUD controllers, state repositories, Pydantic schemas, 3-step creation wizard backend. |
-| **Sprint 5** | **AI Orchestration Engine** | Multi-LLM provider adapter (OpenAI / Anthropic / Ollama), Prompt builder, SSE streaming controllers. |
+| **Sprint 2** | **Landing Page (Done)** | Public marketing hero section, feature highlight cards, trusted tech banner, FAQ accordion. |
+| **Sprint 3** | **Auth & User System (Done)** | RS256 JWT authentication, bcrypt password hashing, Pydantic schemas, AuthContext & ProtectedRoutes. |
+| **Sprint 4** | **Dashboard Shell (Done)** | IDE-style sidebar navigation, top header, status bar, command palette (`Cmd+K`), stats cards. |
+| **Sprint 5** | **Project Workspace API (Done)**| Project & GeneratedDocument ORM models, ProjectRepository, ProjectService, RESTful API controllers, frontend projectService. |
 | **Sprint 6** | **Document Engine (13 Docs)**| Full 13 document generators (SRS, SDS, Threat Model, K8s, Terraform), syntax validation logic. |
 | **Sprint 7** | **Interactive IDE Workspace** | Monaco Editor integration, split-pane view, Mermaid.js renderer, version snapshot diffing. |
 | **Sprint 8** | **Export & GitHub System** | Celery background task worker, ZIP archiving engine, S3 storage integration, raw Markdown bundler. |

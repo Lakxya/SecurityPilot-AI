@@ -166,45 +166,12 @@ This document contains the complete, implementation-ready GitHub Issues backlog 
 
 ---
 
-## 📁 Sprint 5: Project Management & Workspace API
+## 📁 Sprint 5: Project Management & Workspace API (COMPLETED)
 
-### Issue #5.1: Implement Projects & GeneratedDocuments Database Models
-- **Sprint:** Sprint 5
-- **Priority:** High
-- **Effort:** M
-- **Dependencies:** #3.3
-- **Description:** Create SQLAlchemy ORM models for `Projects`, `GeneratedDocuments`, `Chats`, and `AuditLogs` in `backend/app/models/`. Run Alembic migration to create tables.
-- **Acceptance Criteria:**
-  - Cascade deletes enforced on project deletion.
-  - Foreign key constraints validated.
-
-### Issue #5.2: Create Project Repository & Business Services
-- **Sprint:** Sprint 5
-- **Priority:** High
-- **Effort:** M
-- **Dependencies:** #5.1
-- **Description:** Implement `ProjectRepository` and `ProjectService` classes handling project creation, pagination, filtering by status/tech stack, and metadata updates.
-- **Acceptance Criteria:**
-  - Operations scoped strictly to the authenticated user ID.
-
-### Issue #5.3: Build Project API Controllers & 3-Step Wizard API
-- **Sprint:** Sprint 5
-- **Priority:** High
-- **Effort:** S
-- **Dependencies:** #5.2
-- **Description:** Expose `/api/v1/projects` endpoints (GET, POST, PUT, DELETE). Implement request payload parsing for tech stack selection and compliance framework tags.
-- **Acceptance Criteria:**
-  - Validates project creation schema and returns created project payload.
-
-### Issue #5.4: Build Frontend Dashboard & Project Wizard UI
-- **Sprint:** Sprint 5
-- **Priority:** High
-- **Effort:** L
-- **Dependencies:** #5.3, #4.4
-- **Description:** Build `/dashboard` and `/projects` views in React. Implement Dashboard Topbar, Sidebar, Project Cards Grid, and the 3-Step Project Creation Wizard Modal.
-- **Acceptance Criteria:**
-  - Displays user's recent projects with real-time status indicators.
-  - Successfully submits new project payload to backend API.
+- [x] **#5.1** Implement Projects & GeneratedDocuments Database Models (`High`, `M`)
+- [x] **#5.2** Create Project Repository & Business Services (`High`, `M`)
+- [x] **#5.3** Build Project API Controllers & 3-Step Wizard API (`High`, `S`)
+- [x] **#5.4** Build Frontend Dashboard & Project Wizard UI (`High`, `L`)
 
 ---
 
