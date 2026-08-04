@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
 import { Button } from '../components/ui/Button';
@@ -6,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../co
 import { Badge } from '../components/common/Badge';
 
 export function LandingPage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'threat' | 'srs' | 'terraform'>('threat');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
@@ -144,11 +146,11 @@ export function LandingPage() {
 
           {/* CTAs */}
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button variant="emerald" size="lg" icon={<span>🚀</span>}>
+            <Button variant="emerald" size="lg" onClick={() => navigate('/register')} icon={<span>🚀</span>}>
               Get Started Free
             </Button>
-            <Button variant="outline" size="lg" icon={<span>📖</span>}>
-              View Architecture Specs
+            <Button variant="outline" size="lg" onClick={() => navigate('/login')} icon={<span>📖</span>}>
+              Sign In to Workspace
             </Button>
           </div>
 

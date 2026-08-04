@@ -233,12 +233,12 @@ This document contains the complete, implementation-ready GitHub Issues backlog 
 
 ---
 
-## 📦 Sprint 9: Export System & Multi-Format Archive Engine (COMPLETED)
+## 🛡️ AI Copilot & Context-Aware Assistant (COMPLETED)
 
-- [x] **#9.1** Multi-Format Export Engine (`ExportService`) for ZIP, Markdown Bundle & JSON (`High`, `M`)
-- [x] **#9.2** RESTful Export Controllers (`/api/v1/projects/{project_id}/export/*`) (`High`, `M`)
-- [x] **#9.3** Frontend `exportService` Browser File Download Client (`High`, `S`)
-- [x] **#9.4** Frontend `ExportModal` 1-Click Export Package Selection (`High`, `S`)
+- [x] **#Copilot.1** ChatConversation SQLAlchemy ORM Model & Pydantic Validation Schemas (`High`, `M`)
+- [x] **#Copilot.2** REST & SSE Streaming Controllers (`/api/v1/chat/message`, `/api/v1/chat/history/*`) (`High`, `M`)
+- [x] **#Copilot.3** `CopilotEngine` Context-Aware Prompt Enrichment (Tech stack, Compliance, Active Doc) (`High`, `L`)
+- [x] **#Copilot.4** Frontend `CopilotPanel.tsx`, `ChatMessage.tsx`, `ChatInput.tsx`, `useChat.ts`, `chatService.ts` (`High`, `L`)
 
 ---
 

@@ -192,16 +192,17 @@ The relational database uses **PostgreSQL 16**. The schema consists of 10 primar
   - `created_at`: `TIMESTAMPTZ`
 - **Relationships:** Belongs to `Projects`. Indexed on `(project_id, doc_type, is_latest)`.
 
-#### 4. `Chats`
-- **Purpose:** Persists AI Copilot interaction history for each project workspace.
+#### 4. `ChatConversations`
+- **Purpose:** Persists AI Copilot interaction history for each project workspace, supporting context enrichment and past conversation retrieval.
 - **Key Columns:**
-  - `id`: `UUID` (Primary Key)
-  - `project_id`: `UUID` (Foreign Key -> `Projects.id` ON DELETE CASCADE)
+  - `id`: `VARCHAR(36)` (Primary Key UUID)
+  - `project_id`: `VARCHAR(36)` (Foreign Key -> `Projects.id` ON DELETE CASCADE)
+  - `user_id`: `VARCHAR(36)` (Foreign Key -> `Users.id` ON DELETE CASCADE)
   - `role`: `VARCHAR(20)` (`'user'`, `'assistant'`, `'system'`)
-  - `message`: `TEXT` (Prompt or response content)
-  - `model_used`: `VARCHAR(50)` (e.g. `'claude-3-5-sonnet'`, `'gpt-4o'`)
+  - `content`: `TEXT` (Prompt or response content)
+  - `doc_type`: `VARCHAR(50)` (Active document context tag)
   - `created_at`: `TIMESTAMPTZ`
-- **Relationships:** Belongs to `Projects`.
+- **Relationships:** Belongs to `Projects` (`chats` back-populates relationship) and `Users`.
 
 #### 5. `Generations`
 - **Purpose:** Audit tracking for AI document generation requests, execution duration, and token consumption metrics.
@@ -453,6 +454,7 @@ Developer Push ──► GitHub Actions CI/CD Pipeline
 | **Sprint 7** | **Document Engine (13 Docs) (Done)**| 13 security document generators (DocumentGenerators), Mermaid.js diagrams, STRIDE threat matrices, HCL/YAML/Dockerfile templates, frontend `DocumentWorkspace`. |
 | **Sprint 8** | **Interactive IDE Workspace (Done)** | Document listing & version history REST endpoints, version snapshot restore, split-screen version diff comparison view, single document regeneration modal. |
 | **Sprint 9** | **Export System (Done)** | Multi-format export engine (`ExportService`), ZIP repository bundler, Markdown security bundle, JSON spec exporter, frontend `ExportModal` & `exportService`. |
+| **Copilot** | **AI Assistant (Done)** | `ChatConversation` ORM model, `CopilotEngine` context enrichment, `/api/v1/chat/message` SSE endpoint, frontend `CopilotPanel`, `ChatMessage`, `ChatInput`, `useChat`. |
 | **Sprint 10** | **Hardening & Launch** | OWASP security audit, load testing (Locust), OpenTelemetry setup, production release. |
 
 ---

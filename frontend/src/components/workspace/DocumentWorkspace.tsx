@@ -3,6 +3,7 @@ import { Button } from '../ui/Button';
 import { Badge } from '../common/Badge';
 import { Dialog } from '../ui/Dialog';
 import { ExportModal } from './ExportModal';
+import { CopilotPanel } from '../copilot/CopilotPanel';
 import { useSSEStream } from '../../hooks/useSSEStream';
 import { generationService } from '../../services/generationService';
 import { GeneratedDocumentSpec } from '../../types/project';
@@ -338,6 +339,14 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
           )}
         </main>
       </div>
+
+      {/* Dockable AI Copilot Panel */}
+      <CopilotPanel
+        projectId={projectId}
+        projectName={projectName}
+        activeDocType={activeTab}
+        currentDocContent={documentContent}
+      />
 
       {/* Version History Drawer / Panel */}
       {isVersionPanelOpen && (

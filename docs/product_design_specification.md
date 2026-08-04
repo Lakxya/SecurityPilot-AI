@@ -354,6 +354,12 @@ Sprint 9: Export System & Multi-Format Archive Engine (COMPLETED)
 ├── Downloadable file attachment headers (/api/v1/projects/{project_id}/export/*)
 └── Frontend ExportModal 1-click package selection & browser download client
 
+AI Copilot & Context-Aware Assistant (COMPLETED)
+├── Dockable right-side assistant panel (CopilotPanel.tsx)
+├── Context-aware prompt enrichment (Tech stack, Compliance, Active Document)
+├── Database conversation persistence (ChatConversation model)
+└── SSE streaming chat endpoint (/api/v1/chat/message)
+
 Sprint 10: Production Release & Hardening
 ├── Security audit & OWASP headers hardening
 ├── End-to-end regression testing & performance tuning

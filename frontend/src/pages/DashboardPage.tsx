@@ -110,7 +110,12 @@ export function DashboardPage() {
       <CreateProjectModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        onSuccess={() => setActiveTab('projects')}
+        onSuccess={(newProj) => {
+          setActiveTab('projects');
+          if (newProj) {
+            handleOpenWorkspace(newProj.id, newProj.name);
+          }
+        }}
       />
 
       {/* Command Search Palette Modal (Cmd+K / Ctrl+K) */}

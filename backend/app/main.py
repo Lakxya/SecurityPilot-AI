@@ -7,6 +7,7 @@ from app.api.v1.controllers.auth import router as auth_router
 from app.api.v1.controllers.projects import router as projects_router
 from app.api.v1.controllers.generation import router as generation_router
 from app.api.v1.controllers.export import router as export_router
+from app.api.v1.controllers.chat import router as chat_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -22,10 +23,17 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS middleware for React frontend integration
+# CORS middleware for React frontend integration (explicit origins required when allow_credentials=True)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -36,6 +44,7 @@ app.include_router(auth_router, prefix=settings.API_V1_STR)
 app.include_router(projects_router, prefix=settings.API_V1_STR)
 app.include_router(generation_router, prefix=settings.API_V1_STR)
 app.include_router(export_router, prefix=settings.API_V1_STR)
+app.include_router(chat_router, prefix=settings.API_V1_STR)
 
 @app.get("/health", tags=["Health"])
 async def health_check():

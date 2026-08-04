@@ -27,6 +27,7 @@ class Project(Base):
 
     user = relationship("User", back_populates="projects")
     documents = relationship("GeneratedDocument", back_populates="project", cascade="all, delete-orphan", lazy="selectin")
+    chats = relationship("ChatConversation", back_populates="project", cascade="all, delete-orphan", lazy="selectin")
 
 
 class GeneratedDocument(Base):

@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/Card';
 import { Badge } from '../common/Badge';
 import { Button } from '../ui/Button';
+import { projectService } from '../../services/projectService';
+import { Project } from '../../types/project';
 
 export interface ProjectItem {
   id: string;
@@ -20,6 +22,33 @@ export interface RecentProjectsGridProps {
 
 export function RecentProjectsGrid({ onNewProjectClick, onOpenWorkspace }: RecentProjectsGridProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [userProjects, setUserProjects] = useState<ProjectItem[]>([]);
+
+  useEffect(() => {
+    async function loadProjects() {
+      try {
+        const res = await projectService.listProjects();
+        if (res.projects && res.projects.length > 0) {
+          const mapped: ProjectItem[] = res.projects.map((p: Project) => {
+            const stack = p.tech_stack ? Object.values(p.tech_stack).filter(Boolean) as string[] : [];
+            return {
+              id: p.id,
+              name: p.name,
+              description: p.description || 'Security architecture workspace',
+              techStack: stack.length > 0 ? stack : ['React', 'FastAPI', 'PostgreSQL'],
+              compliance: p.compliance_frameworks || ['OWASP Top 10'],
+              updatedAt: 'Recently',
+              status: (p.status as 'ACTIVE' | 'ARCHIVED') || 'ACTIVE',
+            };
+          });
+          setUserProjects(mapped);
+        }
+      } catch {
+        // Fallback to sample projects if API is unreachable
+      }
+    }
+    loadProjects();
+  }, []);
 
   const sampleProjects: ProjectItem[] = [
     {
@@ -51,7 +80,9 @@ export function RecentProjectsGrid({ onNewProjectClick, onOpenWorkspace }: Recen
     },
   ];
 
-  const filteredProjects = sampleProjects.filter(
+  const allProjects = [...userProjects, ...sampleProjects];
+
+  const filteredProjects = allProjects.filter(
     (p) =>
       p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.description.toLowerCase().includes(searchTerm.toLowerCase())

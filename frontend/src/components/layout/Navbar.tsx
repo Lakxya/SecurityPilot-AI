@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/Button';
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 transition-all">
@@ -49,10 +51,10 @@ export function Navbar() {
 
           {/* Action CTAs */}
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>
               Sign In
             </Button>
-            <Button variant="emerald" size="sm">
+            <Button variant="emerald" size="sm" onClick={() => navigate('/register')}>
               Get Started Free
             </Button>
           </div>
@@ -116,10 +118,10 @@ export function Navbar() {
             GitHub Repository
           </a>
           <div className="pt-4 flex flex-col gap-2">
-            <Button variant="ghost" size="md" className="w-full justify-center">
+            <Button variant="ghost" size="md" onClick={() => { setMobileMenuOpen(false); navigate('/login'); }} className="w-full justify-center">
               Sign In
             </Button>
-            <Button variant="emerald" size="md" className="w-full justify-center">
+            <Button variant="emerald" size="md" onClick={() => { setMobileMenuOpen(false); navigate('/register'); }} className="w-full justify-center">
               Get Started Free
             </Button>
           </div>

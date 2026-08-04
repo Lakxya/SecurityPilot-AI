@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
+import { projectService } from '../../services/projectService';
+import { Project } from '../../types/project';
 
 export interface CreateProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (newProject?: Project) => void;
 }
 
 export function CreateProjectModal({ isOpen, onClose, onSuccess }: CreateProjectModalProps) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form State
   const [projectName, setProjectName] = useState('');
@@ -34,14 +37,34 @@ export function CreateProjectModal({ isOpen, onClose, onSuccess }: CreateProject
     }
   };
 
-  const handleComplete = (e: React.FormEvent) => {
+  const handleComplete = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (onSuccess) onSuccess();
-    onClose();
-    // Reset state
-    setStep(1);
-    setProjectName('');
-    setDescription('');
+    setIsSubmitting(true);
+    try {
+      const newProj = await projectService.createProject({
+        name: projectName || 'Untitled Security Project',
+        description: description || 'Secure software architecture specification',
+        tech_stack: {
+          frontend: selectedFrontend,
+          backend: selectedBackend,
+          database: selectedDatabase,
+          cloud: selectedCloud,
+          container: selectedContainer,
+        },
+        compliance_frameworks: selectedCompliance,
+      });
+
+      if (onSuccess) onSuccess(newProj);
+      onClose();
+      // Reset state
+      setStep(1);
+      setProjectName('');
+      setDescription('');
+    } catch (err) {
+      console.error('Failed to create project:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -226,8 +249,8 @@ export function CreateProjectModal({ isOpen, onClose, onSuccess }: CreateProject
               Next: Tech Stack →
             </Button>
           ) : (
-            <Button variant="emerald" size="sm" onClick={handleComplete}>
-              🚀 Create Project Workspace
+            <Button variant="emerald" size="sm" onClick={handleComplete} disabled={isSubmitting}>
+              {isSubmitting ? 'Creating Project...' : '🚀 Create Project Workspace'}
             </Button>
           )}
         </div>
