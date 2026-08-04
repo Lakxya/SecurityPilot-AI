@@ -5,6 +5,7 @@ from app.core.config import settings
 from app.core.database import engine, Base
 from app.api.v1.controllers.auth import router as auth_router
 from app.api.v1.controllers.projects import router as projects_router
+from app.api.v1.controllers.generation import router as generation_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -32,6 +33,7 @@ app.add_middleware(
 # Register API v1 Controllers
 app.include_router(auth_router, prefix=settings.API_V1_STR)
 app.include_router(projects_router, prefix=settings.API_V1_STR)
+app.include_router(generation_router, prefix=settings.API_V1_STR)
 
 @app.get("/health", tags=["Health"])
 async def health_check():
