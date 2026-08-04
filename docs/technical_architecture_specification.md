@@ -451,7 +451,7 @@ Developer Push ──► GitHub Actions CI/CD Pipeline
 | **Sprint 5** | **Project Workspace API (Done)**| Project & GeneratedDocument ORM models, ProjectRepository, ProjectService, RESTful API controllers, frontend projectService. |
 | **Sprint 6** | **AI Pipeline & SSE Stream (Done)**| Multi-LLM provider adapters (OpenAI / Anthropic / Mock), PromptSynthesizer, SSE streaming endpoints, frontend `useSSEStream` hook. |
 | **Sprint 7** | **Document Engine (13 Docs) (Done)**| 13 security document generators (DocumentGenerators), Mermaid.js diagrams, STRIDE threat matrices, HCL/YAML/Dockerfile templates, frontend `DocumentWorkspace`. |
-| **Sprint 8** | **Export & GitHub System** | Celery background task worker, ZIP archiving engine, S3 storage integration, raw Markdown bundler. |
+| **Sprint 8** | **Interactive IDE Workspace (Done)** | Document listing & version history REST endpoints, version snapshot restore, split-screen version diff comparison view, single document regeneration modal. |
 | **Sprint 9** | **DevOps & Infrastructure** | Terraform IaC modules, Docker multi-stage images, Helm charts, EKS deployment pipelines. |
 | **Sprint 10** | **Hardening & Launch** | OWASP security audit, load testing (Locust), OpenTelemetry setup, production release. |
 

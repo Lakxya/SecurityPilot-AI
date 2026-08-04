@@ -224,43 +224,12 @@ This document contains the complete, implementation-ready GitHub Issues backlog 
 
 ---
 
-## 🛠️ Sprint 8: Interactive IDE Workspace & Visualizations
+## 🎛️ Sprint 8: Interactive AI Workspace & Security Review Experience (COMPLETED)
 
-### Issue #8.1: Integrate Monaco Code Editor & Dual-Pane Workspace Layout
-- **Sprint:** Sprint 8
-- **Priority:** High
-- **Effort:** L
-- **Dependencies:** #5.4, #7.4
-- **Description:** Implement the multi-tab IDE workspace layout in `frontend/src/pages/WorkspacePage.tsx`. Integrate `@monaco-editor/react` with split-screen Markdown/Code preview capabilities.
-- **Acceptance Criteria:**
-  - Supports side-by-side editing, syntax highlighting, and live split view toggle.
-
-### Issue #8.2: Implement Mermaid.js Architecture Diagram Renderer
-- **Sprint:** Sprint 8
-- **Priority:** High
-- **Effort:** M
-- **Dependencies:** #8.1
-- **Description:** Build `DiagramViewer.tsx` component using `mermaid` library to dynamically parse and render architecture and sequence diagrams embedded in document markdown.
-- **Acceptance Criteria:**
-  - Clean zoom/pan controls and graceful fallback display for invalid diagram syntax.
-
-### Issue #8.3: Build Right-Drawer AI Security Copilot Panel
-- **Sprint:** Sprint 8
-- **Priority:** High
-- **Effort:** M
-- **Dependencies:** #6.4, #8.1
-- **Description:** Build interactive right-drawer AI Security Copilot chat component (`AIChatPanel.tsx`). Supports prompt shortcut chips ("Audit OWASP", "Add AWS KMS") and stream output rendering.
-- **Acceptance Criteria:**
-  - Persists chat history per project and allows 1-click insertion of code suggestions into the active editor.
-
-### Issue #8.4: Build Document Version History & Diff Compare Modal
-- **Sprint:** Sprint 8
-- **Priority:** Medium
-- **Effort:** M
-- **Dependencies:** #8.1
-- **Description:** Build version timeline bar and side-by-side diff comparison modal (`VersionDiffModal.tsx`) using `diff-match-patch` or Monaco diff editor.
-- **Acceptance Criteria:**
-  - Highlights added/deleted lines between selected versions and supports 1-click rollback.
+- [x] **#8.1** Document Listing & Version History APIs (`/api/v1/generation/{project_id}/docs/versions`) (`High`, `M`)
+- [x] **#8.2** Document Version Snapshot Persistence & Version Restoration (`High`, `M`)
+- [x] **#8.3** IDE Left File Explorer Sidebar & Categories View (`High`, `M`)
+- [x] **#8.4** Split-Screen Version Diff Comparison & Single Document Regeneration (`High`, `M`)
 
 ---
 

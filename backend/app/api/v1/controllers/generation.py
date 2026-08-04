@@ -39,6 +39,17 @@ async def generate_document(
     return StreamingResponse(sse_event_generator(), media_type="text/event-stream")
 
 
+@router.get("/{project_id}/docs", response_model=list[DocumentResponse])
+async def list_project_documents(
+    project_id: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    service = GenerationService(db)
+    docs = await service.list_project_documents(project_id, current_user.id)
+    return [DocumentResponse.model_validate(d) for d in docs]
+
+
 @router.get("/{project_id}/docs/{doc_type}", response_model=DocumentResponse)
 async def get_document(
     project_id: str,
@@ -53,6 +64,31 @@ async def get_document(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Document `{doc_type}` not yet generated for this project.",
         )
+    return DocumentResponse.model_validate(doc)
+
+
+@router.get("/{project_id}/docs/{doc_type}/versions", response_model=list[DocumentResponse])
+async def get_document_versions(
+    project_id: str,
+    doc_type: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    service = GenerationService(db)
+    versions = await service.get_document_versions(project_id, doc_type, current_user.id)
+    return [DocumentResponse.model_validate(v) for v in versions]
+
+
+@router.get("/{project_id}/docs/{doc_type}/versions/{version}", response_model=DocumentResponse)
+async def get_document_by_version(
+    project_id: str,
+    doc_type: str,
+    version: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    service = GenerationService(db)
+    doc = await service.get_document_by_version(project_id, doc_type, version, current_user.id)
     return DocumentResponse.model_validate(doc)
 
 

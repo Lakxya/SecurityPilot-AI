@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '../ui/Button';
 import { Badge } from '../common/Badge';
+import { Dialog } from '../ui/Dialog';
 import { useSSEStream } from '../../hooks/useSSEStream';
 import { generationService } from '../../services/generationService';
+import { GeneratedDocumentSpec } from '../../types/project';
 
 export interface DocumentWorkspaceProps {
   projectId: string;
@@ -17,36 +19,90 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
+  // Version History State
+  const [versions, setVersions] = useState<GeneratedDocumentSpec[]>([]);
+  const [isVersionPanelOpen, setIsVersionPanelOpen] = useState(false);
+  const [compareVersion, setCompareVersion] = useState<GeneratedDocumentSpec | null>(null);
+  const [isDiffMode, setIsDiffMode] = useState(false);
+
+  // Single Document Regeneration Modal State
+  const [isRegenModalOpen, setIsRegenModalOpen] = useState(false);
+  const [customInstructions, setCustomInstructions] = useState('');
+
+  // Generated documents lookup map for file tree
+  const [generatedMap, setGeneratedMap] = useState<Record<string, number>>({});
+
   const { isStreaming, streamContent, startStream } = useSSEStream();
 
-  const docTabs = [
-    { id: 'README', label: 'README.md', icon: '📄' },
-    { id: 'SRS', label: 'SRS.md', icon: '📋' },
-    { id: 'SDS', label: 'SDS.md', icon: '📐' },
-    { id: 'ARCHITECTURE', label: 'Architecture', icon: '🏗️' },
-    { id: 'DATABASE_DESIGN', label: 'Database ER', icon: '🗄️' },
-    { id: 'API_SPEC', label: 'OpenAPI Spec', icon: '🔌' },
-    { id: 'THREAT_MODEL', label: 'STRIDE Model', icon: '🛡️' },
-    { id: 'OWASP_REVIEW', label: 'OWASP Top 10', icon: '⚖️' },
-    { id: 'DOCKERFILE', label: 'Dockerfile', icon: '🐳' },
-    { id: 'DOCKER_COMPOSE', label: 'docker-compose', icon: '📦' },
-    { id: 'KUBERNETES', label: 'K8s Deployment', icon: '☸️' },
-    { id: 'TERRAFORM', label: 'Terraform HCL', icon: '🏛️' },
-    { id: 'GITHUB_ACTIONS', label: 'GitHub CI/CD', icon: '⚡' },
+  const docCategories = [
+    {
+      name: 'Requirements & Specs',
+      items: [
+        { id: 'README', label: 'README.md', icon: '📄' },
+        { id: 'SRS', label: 'SRS.md', icon: '📋' },
+        { id: 'SDS', label: 'SDS.md', icon: '📐' },
+      ],
+    },
+    {
+      name: 'Architecture & Data',
+      items: [
+        { id: 'ARCHITECTURE', label: 'Architecture.md', icon: '🏗️' },
+        { id: 'DATABASE_DESIGN', label: 'Database ER.md', icon: '🗄️' },
+        { id: 'API_SPEC', label: 'OpenAPI Spec.yaml', icon: '🔌' },
+      ],
+    },
+    {
+      name: 'Security & Compliance',
+      items: [
+        { id: 'THREAT_MODEL', label: 'STRIDE Model.md', icon: '🛡️' },
+        { id: 'OWASP_REVIEW', label: 'OWASP Top 10.md', icon: '⚖️' },
+      ],
+    },
+    {
+      name: 'DevOps & Infrastructure',
+      items: [
+        { id: 'DOCKERFILE', label: 'Dockerfile', icon: '🐳' },
+        { id: 'DOCKER_COMPOSE', label: 'docker-compose.yml', icon: '📦' },
+        { id: 'KUBERNETES', label: 'deployment.yaml', icon: '☸️' },
+        { id: 'TERRAFORM', label: 'main.tf', icon: '🏛️' },
+        { id: 'GITHUB_ACTIONS', label: 'ci.yml', icon: '⚡' },
+      ],
+    },
   ];
 
+  // Refresh generated documents list
+  const refreshProjectDocs = useCallback(async () => {
+    try {
+      const docs = await generationService.listProjectDocuments(projectId);
+      const map: Record<string, number> = {};
+      docs.forEach((d) => {
+        map[d.doc_type] = d.version;
+      });
+      setGeneratedMap(map);
+    } catch {
+      // Ignore initial empty list error
+    }
+  }, [projectId]);
+
+  // Load document content & versions
   const loadDocument = useCallback(async (docType: string) => {
     try {
       const doc = await generationService.fetchDocument(projectId, docType);
       setDocumentContent(doc.content);
+      const vers = await generationService.fetchDocumentVersions(projectId, docType);
+      setVersions(vers);
     } catch {
       setDocumentContent(`> Document \`${docType}\` is not yet generated for **${projectName}**.\n\nClick **"⚡ Generate with AI"** above to stream security artifact generation.`);
+      setVersions([]);
     }
+    setCompareVersion(null);
+    setIsDiffMode(false);
   }, [projectId, projectName]);
 
   useEffect(() => {
+    refreshProjectDocs();
     loadDocument(activeTab);
-  }, [activeTab, loadDocument]);
+  }, [activeTab, loadDocument, refreshProjectDocs]);
 
   useEffect(() => {
     if (isStreaming) {
@@ -54,10 +110,15 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
     }
   }, [isStreaming, streamContent]);
 
-  const handleGenerate = () => {
+  const handleGenerate = (instructions?: string) => {
+    setIsRegenModalOpen(false);
     startStream(projectId, {
       doc_type: activeTab,
+      custom_instructions: instructions,
       provider: 'mock',
+    }).then(() => {
+      refreshProjectDocs();
+      loadDocument(activeTab);
     });
   };
 
@@ -67,6 +128,8 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
       await generationService.saveDocument(projectId, activeTab, documentContent);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 2000);
+      refreshProjectDocs();
+      loadDocument(activeTab);
     } catch (err) {
       console.error(err);
     } finally {
@@ -76,114 +139,282 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-950 text-slate-100 font-sans overflow-hidden">
-      {/* Top Controls Header */}
-      <div className="h-14 bg-slate-900 border-b border-slate-800 px-6 flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-4">
+    <div className="flex h-screen bg-slate-950 text-slate-100 font-sans overflow-hidden">
+      {/* Left File Explorer Sidebar */}
+      <aside className="w-64 bg-slate-950 border-r border-slate-800/80 flex flex-col shrink-0">
+        {/* Workspace Brand & Back Header */}
+        <div className="h-14 px-4 flex items-center justify-between border-b border-slate-800/80">
           <button
             onClick={onBackToDashboard}
-            className="text-xs text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors"
+            className="text-xs text-slate-400 hover:text-white flex items-center gap-2 transition-colors font-medium"
           >
             <span>←</span>
-            <span>Dashboard</span>
+            <span className="truncate max-w-[150px] font-bold text-white">{projectName}</span>
           </button>
-          <span className="text-slate-700">|</span>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-bold text-white tracking-tight">{projectName}</span>
-            <Badge variant="indigo" size="sm">
-              Document Workspace
-            </Badge>
-          </div>
+          <Badge variant="indigo" size="sm">
+            IDE
+          </Badge>
         </div>
 
-        <div className="flex items-center gap-3">
-          {saveSuccess && (
-            <span className="text-xs text-emerald-400 font-mono animate-pulse">✓ Saved to Database</span>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsEditing(!isEditing)}
-            disabled={isStreaming}
-          >
-            {isEditing ? 'Preview Mode' : 'Edit Document'}
-          </Button>
-          {isEditing && (
-            <Button
-              variant="emerald"
-              size="sm"
-              onClick={handleSave}
-              disabled={isSaving}
-            >
-              {isSaving ? 'Saving...' : 'Save Edits'}
-            </Button>
-          )}
-          <Button
-            variant="emerald"
-            size="sm"
-            onClick={handleGenerate}
-            disabled={isStreaming}
-            icon={<span className="text-xs">⚡</span>}
-          >
-            {isStreaming ? 'Streaming AI Tokens...' : 'Generate with AI'}
-          </Button>
+        {/* Categories File Tree */}
+        <div className="flex-1 overflow-y-auto p-3 space-y-4 text-xs font-mono">
+          {docCategories.map((cat) => (
+            <div key={cat.name} className="space-y-1">
+              <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold px-2">
+                {cat.name}
+              </span>
+              <div className="space-y-0.5">
+                {cat.items.map((item) => {
+                  const isActive = activeTab === item.id;
+                  const version = generatedMap[item.id];
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id)}
+                      className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg transition-all ${
+                        isActive
+                          ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/40 font-bold'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 truncate">
+                        <span>{item.icon}</span>
+                        <span className="truncate">{item.label}</span>
+                      </div>
+                      {version ? (
+                        <span className="px-1.5 py-0.2 rounded text-[9px] bg-slate-900 text-emerald-400 border border-slate-800">
+                          v{version}
+                        </span>
+                      ) : (
+                        <span className="w-1.5 h-1.5 rounded-full bg-slate-700" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
 
-      {/* 13 Multi-Tab Navigation Rail */}
-      <div className="bg-slate-950 border-b border-slate-800 px-4 flex items-center gap-1 overflow-x-auto shrink-0 scrollbar-none py-1.5">
-        {docTabs.map((tab) => {
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-mono transition-all shrink-0 ${
-                isActive
-                  ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/40 font-bold shadow-sm'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
-              }`}
-            >
-              <span>{tab.icon}</span>
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
-      </div>
+        {/* Sidebar Status Footer */}
+        <div className="p-3 border-t border-slate-800/80 bg-slate-900/40 text-[10px] font-mono text-slate-400 flex items-center justify-between">
+          <span>Active: {activeTab}</span>
+          <span className="text-emerald-400">13 Artifacts Scope</span>
+        </div>
+      </aside>
 
-      {/* Editor & Viewer Pane */}
-      <div className="flex-1 overflow-y-auto p-6 bg-slate-950">
-        <div className="max-w-5xl mx-auto bg-slate-900/60 border border-slate-800 rounded-xl shadow-2xl overflow-hidden min-h-[500px] flex flex-col">
-          {/* Header Banner */}
-          <div className="px-6 py-3 bg-slate-900 border-b border-slate-800/80 flex items-center justify-between">
+      {/* Main Workspace Column */}
+      <div className="flex flex-col flex-1 overflow-hidden relative">
+        {/* Top Actions & Controls Bar */}
+        <header className="h-14 bg-slate-950/80 border-b border-slate-800/80 px-6 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-3">
             <span className="text-xs font-mono text-slate-400">
-              Artifact: <span className="text-indigo-400">{activeTab}</span>
+              Artifact: <span className="text-white font-bold">{activeTab}</span>
             </span>
+            {versions.length > 0 && (
+              <Badge variant="indigo" size="sm">
+                Latest: v{versions[0]?.version || 1}
+              </Badge>
+            )}
             {isStreaming && (
               <span className="text-xs font-mono text-emerald-400 flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                Live SSE Stream Engine Active
+                Streaming Tokens...
               </span>
             )}
           </div>
 
-          {/* Content Body */}
-          <div className="p-6 flex-1">
-            {isEditing ? (
-              <textarea
-                value={documentContent}
-                onChange={(e) => setDocumentContent(e.target.value)}
-                rows={22}
-                className="w-full h-full bg-slate-950 border border-slate-800 rounded-lg p-4 font-mono text-xs text-slate-200 focus:outline-none focus:border-indigo-500 leading-relaxed resize-none"
-              />
-            ) : (
-              <pre className="font-mono text-xs text-slate-200 whitespace-pre-wrap leading-relaxed overflow-x-auto">
-                {documentContent}
-              </pre>
+          <div className="flex items-center gap-3">
+            {saveSuccess && (
+              <span className="text-xs text-emerald-400 font-mono animate-pulse">✓ Saved to DB</span>
             )}
+
+            {/* Version History Drawer Trigger */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsVersionPanelOpen(!isVersionPanelOpen)}
+            >
+              📜 History ({versions.length})
+            </Button>
+
+            {/* Diff View Toggle */}
+            {versions.length > 1 && (
+              <Button
+                variant={isDiffMode ? 'emerald' : 'ghost'}
+                size="sm"
+                onClick={() => setIsDiffMode(!isDiffMode)}
+              >
+                {isDiffMode ? 'Exit Diff Mode' : '🔍 Compare Versions'}
+              </Button>
+            )}
+
+            {/* Edit / Preview Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsEditing(!isEditing)}
+              disabled={isStreaming}
+            >
+              {isEditing ? 'Preview Mode' : '✏️ Edit'}
+            </Button>
+
+            {isEditing && (
+              <Button variant="emerald" size="sm" onClick={handleSave} disabled={isSaving}>
+                {isSaving ? 'Saving...' : 'Save Edits'}
+              </Button>
+            )}
+
+            {/* Regenerate Single Document Button */}
+            <Button
+              variant="emerald"
+              size="sm"
+              onClick={() => setIsRegenModalOpen(true)}
+              disabled={isStreaming}
+              icon={<span>⚡</span>}
+            >
+              Regenerate
+            </Button>
+          </div>
+        </header>
+
+        {/* Content Viewer / Editor / Split-Screen Diff */}
+        <main className="flex-1 overflow-y-auto p-6 bg-slate-950">
+          {isDiffMode && compareVersion ? (
+            /* Split-Screen Diff View */
+            <div className="grid grid-cols-2 gap-6 h-full min-h-[550px]">
+              <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col">
+                <div className="pb-2 border-b border-slate-800 mb-3 flex items-center justify-between">
+                  <span className="text-xs font-mono text-emerald-400">
+                    Current Version (v{versions[0]?.version})
+                  </span>
+                </div>
+                <pre className="font-mono text-xs text-slate-200 whitespace-pre-wrap leading-relaxed overflow-y-auto flex-1">
+                  {documentContent}
+                </pre>
+              </div>
+
+              <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col">
+                <div className="pb-2 border-b border-slate-800 mb-3 flex items-center justify-between">
+                  <span className="text-xs font-mono text-indigo-400">
+                    Comparison Version (v{compareVersion.version})
+                  </span>
+                </div>
+                <pre className="font-mono text-xs text-slate-300 whitespace-pre-wrap leading-relaxed overflow-y-auto flex-1">
+                  {compareVersion.content}
+                </pre>
+              </div>
+            </div>
+          ) : (
+            /* Single Document View / Editor */
+            <div className="max-w-5xl mx-auto bg-slate-900/70 border border-slate-800 rounded-xl shadow-2xl overflow-hidden min-h-[550px] flex flex-col">
+              <div className="p-6 flex-1">
+                {isEditing ? (
+                  <textarea
+                    value={documentContent}
+                    onChange={(e) => setDocumentContent(e.target.value)}
+                    rows={24}
+                    className="w-full h-full bg-slate-950 border border-slate-800 rounded-lg p-4 font-mono text-xs text-slate-200 focus:outline-none focus:border-indigo-500 leading-relaxed resize-none"
+                  />
+                ) : (
+                  <pre className="font-mono text-xs text-slate-200 whitespace-pre-wrap leading-relaxed overflow-x-auto">
+                    {documentContent}
+                  </pre>
+                )}
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
+
+      {/* Version History Drawer / Panel */}
+      {isVersionPanelOpen && (
+        <aside className="w-80 bg-slate-900 border-l border-slate-800 p-4 space-y-4 z-40 overflow-y-auto">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 className="text-xs font-bold text-white font-mono">Version Snapshot History</h3>
+            <button
+              onClick={() => setIsVersionPanelOpen(false)}
+              className="text-slate-400 hover:text-white text-xs"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div className="space-y-2">
+            {versions.map((ver) => (
+              <div
+                key={ver.id}
+                className="bg-slate-950 border border-slate-800 rounded-lg p-3 space-y-2 text-xs font-mono"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-indigo-300 font-bold">Version v{ver.version}</span>
+                  {ver.is_latest && <Badge variant="emerald" size="sm">Current</Badge>}
+                </div>
+                <p className="text-[10px] text-slate-500">
+                  Created: {new Date(ver.created_at).toLocaleString()}
+                </p>
+                <div className="pt-1 flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setDocumentContent(ver.content);
+                      setIsVersionPanelOpen(false);
+                    }}
+                    className="px-2 py-1 bg-slate-900 hover:bg-slate-800 text-[10px] text-slate-300 rounded border border-slate-800"
+                  >
+                    Restore
+                  </button>
+                  <button
+                    onClick={() => {
+                      setCompareVersion(ver);
+                      setIsDiffMode(true);
+                      setIsVersionPanelOpen(false);
+                    }}
+                    className="px-2 py-1 bg-indigo-600/20 hover:bg-indigo-600/30 text-[10px] text-indigo-300 rounded border border-indigo-500/30"
+                  >
+                    Compare Diff
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </aside>
+      )}
+
+      {/* Single Document Regeneration Modal */}
+      <Dialog
+        isOpen={isRegenModalOpen}
+        onClose={() => setIsRegenModalOpen(false)}
+        title={`Regenerate Security Artifact: ${activeTab}`}
+        description="Provide optional custom instructions to refine the AI security generation engine output."
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              Custom AI Prompt Refinements / Security Directives
+            </label>
+            <textarea
+              rows={4}
+              value={customInstructions}
+              onChange={(e) => setCustomInstructions(e.target.value)}
+              placeholder="e.g. Focus on OAuth 2.0 PKCE flows, add AWS KMS encryption rules, or enforce PCI-DSS v4.0 audit logging..."
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+            />
+          </div>
+          <div className="pt-2 flex justify-end gap-3 border-t border-slate-800">
+            <Button variant="ghost" size="sm" onClick={() => setIsRegenModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="emerald"
+              size="sm"
+              onClick={() => handleGenerate(customInstructions)}
+              icon={<span>⚡</span>}
+            >
+              Regenerate Document
+            </Button>
           </div>
         </div>
-      </div>
+      </Dialog>
     </div>
   );
 }

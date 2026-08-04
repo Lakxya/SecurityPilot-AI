@@ -1,4 +1,5 @@
 from typing import AsyncGenerator
+from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.models.project import Project, GeneratedDocument
@@ -98,6 +99,57 @@ class GenerationService:
         )
         result = await self.db.execute(stmt)
         return result.scalars().first()
+
+    async def list_project_documents(
+        self, project_id: str, user_id: str
+    ) -> list[GeneratedDocument]:
+        await self.project_service.get_project(project_id, user_id)
+        stmt = (
+            select(GeneratedDocument)
+            .where(
+                GeneratedDocument.project_id == project_id,
+                GeneratedDocument.is_latest == True,
+            )
+            .order_by(GeneratedDocument.doc_type.asc())
+        )
+        result = await self.db.execute(stmt)
+        return list(result.scalars().all())
+
+    async def get_document_versions(
+        self, project_id: str, doc_type: str, user_id: str
+    ) -> list[GeneratedDocument]:
+        await self.project_service.get_project(project_id, user_id)
+        stmt = (
+            select(GeneratedDocument)
+            .where(
+                GeneratedDocument.project_id == project_id,
+                GeneratedDocument.doc_type == doc_type.upper(),
+            )
+            .order_by(GeneratedDocument.version.desc())
+        )
+        result = await self.db.execute(stmt)
+        return list(result.scalars().all())
+
+    async def get_document_by_version(
+        self, project_id: str, doc_type: str, version: int, user_id: str
+    ) -> GeneratedDocument:
+        await self.project_service.get_project(project_id, user_id)
+        stmt = (
+            select(GeneratedDocument)
+            .where(
+                GeneratedDocument.project_id == project_id,
+                GeneratedDocument.doc_type == doc_type.upper(),
+                GeneratedDocument.version == version,
+            )
+        )
+        result = await self.db.execute(stmt)
+        doc = result.scalars().first()
+        if not doc:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Version `{version}` for document `{doc_type}` not found.",
+            )
+        return doc
 
     async def update_document_content(
         self, project_id: str, doc_type: str, content: str, user_id: str

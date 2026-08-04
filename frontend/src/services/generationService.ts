@@ -18,6 +18,19 @@ export const generationService = {
     };
   },
 
+  async listProjectDocuments(projectId: string): Promise<GeneratedDocumentSpec[]> {
+    const res = await fetch(`${API_BASE_URL}/generation/${projectId}/docs`, {
+      method: 'GET',
+      headers: this.getAuthHeaders(),
+    });
+
+    if (!res.ok) {
+      throw new Error('Failed to fetch generated documents.');
+    }
+
+    return await res.json();
+  },
+
   async fetchDocument(projectId: string, docType: string): Promise<GeneratedDocumentSpec> {
     const res = await fetch(`${API_BASE_URL}/generation/${projectId}/docs/${docType}`, {
       method: 'GET',
@@ -26,6 +39,32 @@ export const generationService = {
 
     if (!res.ok) {
       throw new Error(`Document ${docType} not found.`);
+    }
+
+    return await res.json();
+  },
+
+  async fetchDocumentVersions(projectId: string, docType: string): Promise<GeneratedDocumentSpec[]> {
+    const res = await fetch(`${API_BASE_URL}/generation/${projectId}/docs/${docType}/versions`, {
+      method: 'GET',
+      headers: this.getAuthHeaders(),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch version history for ${docType}.`);
+    }
+
+    return await res.json();
+  },
+
+  async fetchDocumentVersion(projectId: string, docType: string, version: number): Promise<GeneratedDocumentSpec> {
+    const res = await fetch(`${API_BASE_URL}/generation/${projectId}/docs/${docType}/versions/${version}`, {
+      method: 'GET',
+      headers: this.getAuthHeaders(),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch version ${version} for ${docType}.`);
     }
 
     return await res.json();
