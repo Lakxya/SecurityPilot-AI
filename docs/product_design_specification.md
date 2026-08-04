@@ -349,10 +349,10 @@ Sprint 8: Interactive AI Workspace & Security Review Experience (COMPLETED)
 ├── Split-Screen Version Diff Comparison View
 └── Single Document Regeneration Modal with custom prompt directives
 
-Sprint 9: Cloud & Infrastructure Deployment
-├── Docker multi-stage containerization
-├── Kubernetes Helm chart packaging
-└── CI/CD deployment pipeline configuration
+Sprint 9: Export System & Multi-Format Archive Engine (COMPLETED)
+├── Multi-format document exporter (ZIP repository layout, Markdown bundle, JSON spec)
+├── Downloadable file attachment headers (/api/v1/projects/{project_id}/export/*)
+└── Frontend ExportModal 1-click package selection & browser download client
 
 Sprint 10: Production Release & Hardening
 ├── Security audit & OWASP headers hardening

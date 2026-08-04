@@ -233,43 +233,12 @@ This document contains the complete, implementation-ready GitHub Issues backlog 
 
 ---
 
-## 📦 Sprint 9: Export System & Background Task Worker
+## 📦 Sprint 9: Export System & Multi-Format Archive Engine (COMPLETED)
 
-### Issue #9.1: Configure Celery Background Task Worker & Redis Broker
-- **Sprint:** Sprint 9
-- **Priority:** High
-- **Effort:** M
-- **Dependencies:** #3.4
-- **Description:** Set up Celery task worker in `backend/app/core/celery_app.py` backed by Redis for executing asynchronous long-running tasks (archive compression, PDF rendering).
-- **Acceptance Criteria:**
-  - Celery workers process background jobs independently from API thread pool.
-
-### Issue #9.2: Build Multi-Format Export Engine (ZIP, Markdown Bundle, PDF)
-- **Sprint:** Sprint 9
-- **Priority:** High
-- **Effort:** M
-- **Dependencies:** #9.1
-- **Description:** Implement background Celery tasks for bundling project artifacts into a formatted ZIP archive, single consolidated Markdown document, or PDF compliance report.
-- **Acceptance Criteria:**
-  - Generated ZIP contains complete repository folder layout ready for extraction.
-
-### Issue #9.3: Implement AWS S3 Storage Adapter for Generated Exports
-- **Sprint:** Sprint 9
-- **Priority:** High
-- **Effort:** S
-- **Dependencies:** #9.2
-- **Description:** Implement S3 storage service in `backend/app/services/storage.py` uploading compiled archives and issuing signed, time-limited download URLs.
-- **Acceptance Criteria:**
-  - Presigned URLs expire after 15 minutes.
-
-### Issue #9.4: Build Export Modal & One-Click Download UI
-- **Sprint:** Sprint 9
-- **Priority:** High
-- **Effort:** S
-- **Dependencies:** #9.3, #8.1
-- **Description:** Build frontend `ExportModal.tsx` allowing users to select export format (ZIP, Markdown, PDF), initiate background job, and trigger direct file download.
-- **Acceptance Criteria:**
-  - Real-time progress bar feedback during archive compilation.
+- [x] **#9.1** Multi-Format Export Engine (`ExportService`) for ZIP, Markdown Bundle & JSON (`High`, `M`)
+- [x] **#9.2** RESTful Export Controllers (`/api/v1/projects/{project_id}/export/*`) (`High`, `M`)
+- [x] **#9.3** Frontend `exportService` Browser File Download Client (`High`, `S`)
+- [x] **#9.4** Frontend `ExportModal` 1-Click Export Package Selection (`High`, `S`)
 
 ---
 

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Button } from '../ui/Button';
 import { Badge } from '../common/Badge';
 import { Dialog } from '../ui/Dialog';
+import { ExportModal } from './ExportModal';
 import { useSSEStream } from '../../hooks/useSSEStream';
 import { generationService } from '../../services/generationService';
 import { GeneratedDocumentSpec } from '../../types/project';
@@ -18,6 +19,7 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
   // Version History State
   const [versions, setVersions] = useState<GeneratedDocumentSpec[]>([]);
@@ -265,6 +267,16 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
               </Button>
             )}
 
+            {/* Export Package Button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsExportModalOpen(true)}
+              icon={<span>📦</span>}
+            >
+              Export
+            </Button>
+
             {/* Regenerate Single Document Button */}
             <Button
               variant="emerald"
@@ -415,6 +427,14 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
           </div>
         </div>
       </Dialog>
+
+      {/* Package Export Modal */}
+      <ExportModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        projectId={projectId}
+        projectName={projectName}
+      />
     </div>
   );
 }
