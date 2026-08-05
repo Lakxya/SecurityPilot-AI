@@ -1,4 +1,4 @@
-import { Project, ProjectCreatePayload, ProjectUpdatePayload, ProjectListResponse } from '../types/project';
+import { Project, ProjectCreatePayload, ProjectUpdatePayload, ProjectListResponse, ProjectStats } from '../types/project';
 import { authService } from './authService';
 
 const API_BASE_URL = 'http://localhost:8000/api/v1';
@@ -25,6 +25,19 @@ export const projectService = {
 
     if (!res.ok) {
       throw new Error('Failed to fetch project workspaces.');
+    }
+
+    return await res.json();
+  },
+
+  async getProjectStats(): Promise<ProjectStats> {
+    const res = await fetch(`${API_BASE_URL}/projects/stats`, {
+      method: 'GET',
+      headers: this.getAuthHeaders(),
+    });
+
+    if (!res.ok) {
+      throw new Error('Failed to retrieve workspace analytics.');
     }
 
     return await res.json();

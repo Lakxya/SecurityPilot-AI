@@ -8,6 +8,7 @@ from app.schemas.project import (
     ProjectUpdate,
     ProjectResponse,
     ProjectListResponse,
+    ProjectStatsResponse,
 )
 from app.services.project_service import ProjectService
 
@@ -36,6 +37,14 @@ async def list_projects(
         projects=[ProjectResponse.model_validate(p) for p in projects],
         total=len(projects),
     )
+
+@router.get("/stats", response_model=ProjectStatsResponse)
+async def get_project_stats(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    service = ProjectService(db)
+    return await service.get_stats(current_user.id)
 
 @router.get("/{project_id}", response_model=ProjectResponse)
 async def get_project(

@@ -50,3 +50,11 @@ class ProjectResponse(BaseModel):
 class ProjectListResponse(BaseModel):
     projects: list[ProjectResponse]
     total: int
+
+class ProjectStatsResponse(BaseModel):
+    total_projects: int
+    total_documents: int
+    artifact_completion_pct: float
+    average_risk_score: str
+    compliance_distribution: dict[str, int]
+    active_projects: int

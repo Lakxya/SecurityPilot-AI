@@ -49,3 +49,12 @@ export interface ProjectListResponse {
   projects: Project[];
   total: number;
 }
+
+export interface ProjectStats {
+  total_projects: number;
+  total_documents: number;
+  artifact_completion_pct: number;
+  average_risk_score: string;
+  compliance_distribution: Record<string, number>;
+  active_projects: number;
+}
