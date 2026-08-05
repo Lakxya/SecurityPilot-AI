@@ -13,7 +13,7 @@ export function Card({ children, hoverGlow = true, className, ...props }: CardPr
       className={twMerge(
         clsx(
           'bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm rounded-xl p-6 transition-all duration-300',
-          hoverGlow && 'hover:border-slate-700 hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-0.5',
+          hoverGlow && 'hover:border-indigo-500/40 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-0.5',
           className
         )
       )}

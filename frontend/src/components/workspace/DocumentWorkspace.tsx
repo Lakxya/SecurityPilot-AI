@@ -5,6 +5,7 @@ import { Dialog } from '../ui/Dialog';
 import { ExportModal } from './ExportModal';
 import { CopilotPanel } from '../copilot/CopilotPanel';
 import { useSSEStream } from '../../hooks/useSSEStream';
+import { useToast } from '../../hooks/useToast';
 import { generationService } from '../../services/generationService';
 import { GeneratedDocumentSpec } from '../../types/project';
 
@@ -15,6 +16,7 @@ export interface DocumentWorkspaceProps {
 }
 
 export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }: DocumentWorkspaceProps) {
+  const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState('README');
   const [documentContent, setDocumentContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
@@ -130,10 +132,12 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
     try {
       await generationService.saveDocument(projectId, activeTab, documentContent);
       setSaveSuccess(true);
+      showToast('success', 'Document Saved', `Artifact ${activeTab} updated in database.`);
       setTimeout(() => setSaveSuccess(false), 2000);
       refreshProjectDocs();
       loadDocument(activeTab);
     } catch (err) {
+      showToast('error', 'Save Failed', 'Could not persist document edits.');
       console.error(err);
     } finally {
       setIsSaving(false);
