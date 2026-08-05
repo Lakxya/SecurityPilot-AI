@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/Card';
 import { Badge } from '../common/Badge';
 import { Button } from '../ui/Button';
+import { SkeletonCard } from '../common/Skeleton';
+import { EmptyState } from '../common/EmptyState';
 import { projectService } from '../../services/projectService';
 import { Project } from '../../types/project';
 
@@ -23,9 +25,11 @@ export interface RecentProjectsGridProps {
 export function RecentProjectsGrid({ onNewProjectClick, onOpenWorkspace }: RecentProjectsGridProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [userProjects, setUserProjects] = useState<ProjectItem[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     async function loadProjects() {
+      setIsLoading(true);
       try {
         const res = await projectService.listProjects();
         if (res.projects && res.projects.length > 0) {
@@ -45,6 +49,8 @@ export function RecentProjectsGrid({ onNewProjectClick, onOpenWorkspace }: Recen
         }
       } catch {
         // Fallback to sample projects if API is unreachable
+      } finally {
+        setIsLoading(false);
       }
     }
     loadProjects();
@@ -114,68 +120,85 @@ export function RecentProjectsGrid({ onNewProjectClick, onOpenWorkspace }: Recen
       </div>
 
       {/* Projects Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredProjects.map((project) => (
-          <Card key={project.id} className="flex flex-col justify-between p-6">
-            <CardHeader>
-              <div className="flex items-start justify-between gap-2 mb-2">
-                <CardTitle
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </div>
+      ) : filteredProjects.length === 0 ? (
+        <EmptyState
+          icon="🔎"
+          title="No Security Workspaces Found"
+          description={`No project workspaces match your search term "${searchTerm}".`}
+          actionLabel="Clear Search Filter"
+          onAction={() => setSearchTerm('')}
+          className="my-8"
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProjects.map((project) => (
+            <Card key={project.id} className="flex flex-col justify-between p-6">
+              <CardHeader>
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <CardTitle
+                    onClick={() => onOpenWorkspace && onOpenWorkspace(project.id, project.name)}
+                    className="text-base font-bold text-white hover:text-indigo-400 transition-colors cursor-pointer"
+                  >
+                    {project.name}
+                  </CardTitle>
+                  <Badge variant="emerald" size="sm">
+                    {project.status}
+                  </Badge>
+                </div>
+                <CardDescription className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                  {project.description}
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="space-y-4 py-2">
+                {/* Tech Stack Tags */}
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Tech Stack</span>
+                  <div className="flex flex-wrap gap-1">
+                    {project.techStack.map((tech) => (
+                      <span
+                        key={tech}
+                        className="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-950 text-slate-300 border border-slate-800"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Compliance Frameworks */}
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Compliance</span>
+                  <div className="flex flex-wrap gap-1">
+                    {project.compliance.map((c) => (
+                      <Badge key={c} variant="indigo" size="sm">
+                        {c}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+
+              <CardFooter className="mt-4 pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <span className="text-[10px] text-slate-400 font-mono">Updated {project.updatedAt}</span>
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => onOpenWorkspace && onOpenWorkspace(project.id, project.name)}
-                  className="text-base font-bold text-white hover:text-indigo-400 transition-colors cursor-pointer"
                 >
-                  {project.name}
-                </CardTitle>
-                <Badge variant="emerald" size="sm">
-                  {project.status}
-                </Badge>
-              </div>
-              <CardDescription className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
-                {project.description}
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent className="space-y-4 py-2">
-              {/* Tech Stack Tags */}
-              <div className="space-y-1">
-                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Tech Stack</span>
-                <div className="flex flex-wrap gap-1">
-                  {project.techStack.map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-950 text-slate-300 border border-slate-800"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Compliance Frameworks */}
-              <div className="space-y-1">
-                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Compliance</span>
-                <div className="flex flex-wrap gap-1">
-                  {project.compliance.map((c) => (
-                    <Badge key={c} variant="indigo" size="sm">
-                      {c}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-
-            <CardFooter className="mt-4 pt-4 border-t border-slate-800/80 flex items-center justify-between">
-              <span className="text-[10px] text-slate-400 font-mono">Updated {project.updatedAt}</span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onOpenWorkspace && onOpenWorkspace(project.id, project.name)}
-              >
-                Open Workspace →
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+                  Open Workspace →
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

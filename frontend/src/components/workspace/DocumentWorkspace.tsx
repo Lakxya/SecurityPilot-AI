@@ -4,10 +4,30 @@ import { Badge } from '../common/Badge';
 import { Dialog } from '../ui/Dialog';
 import { ExportModal } from './ExportModal';
 import { CopilotPanel } from '../copilot/CopilotPanel';
+import { CodeViewer } from '../common/CodeViewer';
+import { EmptyState } from '../common/EmptyState';
 import { useSSEStream } from '../../hooks/useSSEStream';
 import { useToast } from '../../hooks/useToast';
 import { generationService } from '../../services/generationService';
 import { GeneratedDocumentSpec } from '../../types/project';
+
+const getLanguageForTab = (tab: string): string => {
+  switch (tab) {
+    case 'DOCKERFILE':
+      return 'dockerfile';
+    case 'DOCKER_COMPOSE':
+    case 'KUBERNETES':
+    case 'GITHUB_ACTIONS':
+      return 'yaml';
+    case 'TERRAFORM':
+      return 'hcl';
+    case 'DATABASE_DESIGN':
+    case 'API_SPEC':
+      return 'json';
+    default:
+      return 'markdown';
+  }
+};
 
 export interface DocumentWorkspaceProps {
   projectId: string;
@@ -23,6 +43,7 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [autosaveStatus, setAutosaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
 
   // Version History State
   const [versions, setVersions] = useState<GeneratedDocumentSpec[]>([]);
@@ -38,6 +59,22 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
   const [generatedMap, setGeneratedMap] = useState<Record<string, number>>({});
 
   const { isStreaming, streamContent, startStream } = useSSEStream();
+
+  // 1.5s Debounced Autosave Effect
+  useEffect(() => {
+    if (!isEditing || !documentContent || documentContent.includes('is not yet generated')) return;
+    const timer = setTimeout(async () => {
+      try {
+        await generationService.saveDocument(projectId, activeTab, documentContent);
+        setAutosaveStatus('saved');
+        showToast('success', 'Autosaved', `Edits saved to ${activeTab}`);
+      } catch {
+        setAutosaveStatus('idle');
+      }
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [documentContent, isEditing, projectId, activeTab, showToast]);
 
   const docCategories = [
     {
@@ -324,21 +361,37 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
             </div>
           ) : (
             /* Single Document View / Editor */
-            <div className="max-w-5xl mx-auto bg-slate-900/70 border border-slate-800 rounded-xl shadow-2xl overflow-hidden min-h-[550px] flex flex-col">
-              <div className="p-6 flex-1">
-                {isEditing ? (
+            <div className="max-w-5xl mx-auto min-h-[550px] flex flex-col">
+              {documentContent.includes('is not yet generated') ? (
+                <EmptyState
+                  icon="🛡️"
+                  title={`Artifact ${activeTab} Not Generated`}
+                  description={`The ${activeTab} security specification is not yet compiled for ${projectName}.`}
+                  actionLabel="⚡ Generate with AI"
+                  onAction={() => handleGenerate()}
+                  className="my-auto"
+                />
+              ) : isEditing ? (
+                <div className="bg-slate-900/70 border border-slate-800 rounded-xl p-4 space-y-3 flex-1 flex flex-col">
+                  <div className="flex items-center justify-between text-xs font-mono text-slate-400">
+                    <span>Editing Artifact: {activeTab}</span>
+                    <Badge variant={autosaveStatus === 'saved' ? 'emerald' : 'amber'} size="sm" pulse={autosaveStatus === 'saving'}>
+                      {autosaveStatus === 'saving' ? 'Autosaving in 1.5s...' : autosaveStatus === 'saved' ? 'Autosaved to DB' : 'Unsaved edits'}
+                    </Badge>
+                  </div>
                   <textarea
                     value={documentContent}
-                    onChange={(e) => setDocumentContent(e.target.value)}
-                    rows={24}
-                    className="w-full h-full bg-slate-950 border border-slate-800 rounded-lg p-4 font-mono text-xs text-slate-200 focus:outline-none focus:border-indigo-500 leading-relaxed resize-none"
+                    onChange={(e) => {
+                      setDocumentContent(e.target.value);
+                      setAutosaveStatus('saving');
+                    }}
+                    rows={22}
+                    className="w-full flex-1 bg-slate-950 border border-slate-800 rounded-lg p-4 font-mono text-xs text-slate-200 focus:outline-none focus:border-indigo-500 leading-relaxed resize-none"
                   />
-                ) : (
-                  <pre className="font-mono text-xs text-slate-200 whitespace-pre-wrap leading-relaxed overflow-x-auto">
-                    {documentContent}
-                  </pre>
-                )}
-              </div>
+                </div>
+              ) : (
+                <CodeViewer content={documentContent} language={getLanguageForTab(activeTab)} />
+              )}
             </div>
           )}
         </main>
