@@ -9,6 +9,7 @@ from app.api.v1.controllers.generation import router as generation_router
 from app.api.v1.controllers.export import router as export_router
 from app.api.v1.controllers.chat import router as chat_router
 from app.api.v1.controllers.vault import router as vault_router
+from app.api.v1.controllers.recommendations import router as recommendations_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -58,6 +59,7 @@ app.include_router(generation_router, prefix=settings.API_V1_STR)
 app.include_router(export_router, prefix=settings.API_V1_STR)
 app.include_router(chat_router, prefix=settings.API_V1_STR)
 app.include_router(vault_router, prefix=settings.API_V1_STR)
+app.include_router(recommendations_router, prefix=settings.API_V1_STR)
 
 @app.get("/health", tags=["Health"])
 async def health_check():

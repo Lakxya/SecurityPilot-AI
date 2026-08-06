@@ -6,6 +6,7 @@ import { ExportModal } from './ExportModal';
 import { CopilotPanel } from '../copilot/CopilotPanel';
 import { CodeViewer } from '../common/CodeViewer';
 import { EmptyState } from '../common/EmptyState';
+import { RecommendationCard } from '../vault/RecommendationCard';
 import { useSSEStream } from '../../hooks/useSSEStream';
 import { useToast } from '../../hooks/useToast';
 import { generationService } from '../../services/generationService';
@@ -353,7 +354,9 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
         </header>
 
         {/* Content Viewer / Editor / Split-Screen Diff */}
-        <main className="flex-1 overflow-y-auto p-6 bg-slate-950">
+        <main className="flex-1 overflow-y-auto p-6 bg-slate-950 space-y-6">
+          <RecommendationCard projectId={projectId} docType={activeTab} />
+
           {isDiffMode && compareVersion ? (
             /* Split-Screen Diff View */
             <div className="grid grid-cols-2 gap-6 h-full min-h-[550px]">
