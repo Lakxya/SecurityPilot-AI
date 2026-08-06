@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { Badge } from '../common/Badge';
+import { Button } from '../ui/Button';
+import { VaultModal } from '../vault/VaultModal';
 
 export interface DashboardHeaderProps {
   onOpenCommandSearch: () => void;
@@ -10,38 +12,45 @@ export interface DashboardHeaderProps {
 export function DashboardHeader({ onOpenCommandSearch, currentPath = 'Workspace / Dashboard' }: DashboardHeaderProps) {
   const { user, logout } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [isVaultOpen, setIsVaultOpen] = useState(false);
 
   return (
-    <header className="h-16 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 px-6 flex items-center justify-between shrink-0 relative z-30">
-      {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-xs font-mono">
-        <span className="text-slate-400">{currentPath}</span>
-      </div>
+    <>
+      <header className="h-16 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 px-6 flex items-center justify-between shrink-0 relative z-30">
+        {/* Breadcrumbs */}
+        <div className="flex items-center gap-2 text-xs font-mono">
+          <span className="text-slate-400">{currentPath}</span>
+        </div>
 
-      {/* Center Command Palette Search Trigger */}
-      <div className="hidden sm:flex items-center">
-        <button
-          onClick={onOpenCommandSearch}
-          className="bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-slate-700 rounded-lg px-4 py-1.5 text-xs text-slate-400 hover:text-slate-200 flex items-center gap-6 transition-all shadow-inner cursor-pointer"
-        >
-          <div className="flex items-center gap-2">
-            <svg className="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <span>Search projects, docs, or AI commands...</span>
-          </div>
-          <kbd className="bg-slate-950 border border-slate-800 px-1.5 py-0.5 rounded text-[10px] text-slate-400 font-mono">
-            ⌘K
-          </kbd>
-        </button>
-      </div>
+        {/* Center Command Palette Search Trigger */}
+        <div className="hidden sm:flex items-center">
+          <button
+            onClick={onOpenCommandSearch}
+            className="bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-slate-700 rounded-lg px-4 py-1.5 text-xs text-slate-400 hover:text-slate-200 flex items-center gap-6 transition-all shadow-inner cursor-pointer"
+          >
+            <div className="flex items-center gap-2">
+              <svg className="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <span>Search projects, docs, or AI commands...</span>
+            </div>
+            <kbd className="bg-slate-950 border border-slate-800 px-1.5 py-0.5 rounded text-[10px] text-slate-400 font-mono">
+              ⌘K
+            </kbd>
+          </button>
+        </div>
 
-      {/* Right Controls */}
-      <div className="flex items-center gap-4">
-        {/* AI Model Indicator */}
-        <Badge variant="indigo" size="sm" className="hidden lg:inline-flex">
-          Claude 3.5 Sonnet
-        </Badge>
+        {/* Right Controls */}
+        <div className="flex items-center gap-3">
+          {/* AI Vault Button */}
+          <Button variant="outline" size="sm" onClick={() => setIsVaultOpen(true)} icon={<span>🔑</span>}>
+            AI Vault
+          </Button>
+
+          {/* AI Model Indicator */}
+          <Badge variant="indigo" size="sm" className="hidden lg:inline-flex">
+            Claude 3.5 Sonnet
+          </Badge>
 
         {/* Notifications Icon */}
         <button
@@ -94,5 +103,7 @@ export function DashboardHeader({ onOpenCommandSearch, currentPath = 'Workspace 
         </div>
       </div>
     </header>
+    <VaultModal isOpen={isVaultOpen} onClose={() => setIsVaultOpen(false)} />
+    </>
   );
 }

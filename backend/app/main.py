@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.database import engine, Base
@@ -8,6 +8,7 @@ from app.api.v1.controllers.projects import router as projects_router
 from app.api.v1.controllers.generation import router as generation_router
 from app.api.v1.controllers.export import router as export_router
 from app.api.v1.controllers.chat import router as chat_router
+from app.api.v1.controllers.vault import router as vault_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -22,6 +23,17 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     lifespan=lifespan,
 )
+
+# Production HTTP Security Headers Middleware
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    return response
 
 # CORS middleware for React frontend integration (explicit origins required when allow_credentials=True)
 app.add_middleware(
@@ -45,6 +57,7 @@ app.include_router(projects_router, prefix=settings.API_V1_STR)
 app.include_router(generation_router, prefix=settings.API_V1_STR)
 app.include_router(export_router, prefix=settings.API_V1_STR)
 app.include_router(chat_router, prefix=settings.API_V1_STR)
+app.include_router(vault_router, prefix=settings.API_V1_STR)
 
 @app.get("/health", tags=["Health"])
 async def health_check():

@@ -1,10 +1,18 @@
 # Environment & Secrets
 .env
 .env.local
-.env.*.local
+.env.*
 *.pem
 *.key
+*.crt
 *.p12
+*.pfx
+
+# Database Files
+*.db
+*.sqlite
+*.sqlite3
+securitypilot.db
 
 # Node.js / Frontend
 node_modules/
