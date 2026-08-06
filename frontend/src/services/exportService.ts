@@ -74,4 +74,25 @@ export const exportService = {
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
   },
+
+  async downloadPdfReport(projectId: string, projectName: string): Promise<void> {
+    const res = await fetch(`${API_BASE_URL}/projects/${projectId}/export/pdf`, {
+      method: 'POST',
+      headers: this.getAuthHeaders(),
+    });
+
+    if (!res.ok) {
+      throw new Error('Failed to generate PDF compliance report.');
+    }
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${projectName.toLowerCase().replace(/\s+/g, '_')}_compliance_report.html`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  },
 };

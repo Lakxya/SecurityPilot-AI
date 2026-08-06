@@ -147,3 +147,38 @@ class ExportService:
             "exported_at": datetime.now(timezone.utc).isoformat(),
             "artifacts": artifacts,
         }
+
+    async def generate_pdf_report(self, project_id: str, user_id: str) -> str:
+        project, docs = await self.get_project_documents(project_id, user_id)
+        existing_map = {d.doc_type.upper(): d for d in docs}
+        all_doc_types = [
+            "README", "SRS", "SDS", "ARCHITECTURE", "DATABASE_DESIGN",
+            "API_SPEC", "THREAT_MODEL", "OWASP_REVIEW", "DOCKERFILE",
+            "DOCKER_COMPOSE", "KUBERNETES", "TERRAFORM", "GITHUB_ACTIONS"
+        ]
+
+        html_parts = [
+            "<!DOCTYPE html>",
+            "<html><head><meta charset='utf-8'><title>Security Architecture Executive Report</title>",
+            "<style>",
+            "body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1e293b; padding: 40px; max-width: 900px; margin: 0 auto; }",
+            "h1 { color: #0f172a; border-bottom: 2px solid #4f46e5; padding-bottom: 8px; }",
+            "h2 { color: #334155; margin-top: 30px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; }",
+            ".meta { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; p: 16px; padding: 16px; margin-bottom: 24px; }",
+            "pre { background: #0f172a; color: #f8fafc; padding: 16px; border-radius: 8px; overflow-x: auto; font-family: monospace; font-size: 13px; }",
+            "@media print { body { padding: 0; } .page-break { page-break-before: always; } }",
+            "</style></head><body>",
+            f"<h1>Security Architecture Specification — {project.name}</h1>",
+            "<div class='meta'>",
+            f"<p><strong>Generated:</strong> {datetime.now(timezone.utc).strftime('%B %d, %Y')}</p>",
+            f"<p><strong>Description:</strong> {project.description or 'N/A'}</p>",
+            f"<p><strong>Compliance Frameworks:</strong> {', '.join(project.compliance_frameworks or [])}</p>",
+            "</div>"
+        ]
+
+        for doc_type in all_doc_types:
+            content = existing_map[doc_type].content if doc_type in existing_map else DocumentGenerators.get_template_prompt(doc_type, project)
+            html_parts.append(f"<div class='page-break'><h2>Artifact: {doc_type}</h2><pre>{content}</pre></div>")
+
+        html_parts.append("</body></html>")
+        return "".join(html_parts)

@@ -47,3 +47,18 @@ async def export_project_json(
     service = ExportService(db)
     json_data = await service.generate_json_export(project_id, current_user.id)
     return JSONResponse(content=json_data)
+
+@router.post("/{project_id}/export/pdf")
+async def export_project_pdf(
+    project_id: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    service = ExportService(db)
+    pdf_html = await service.generate_pdf_report(project_id, current_user.id)
+    filename = f"securitypilot_report_{project_id[:8]}.html"
+    return Response(
+        content=pdf_html,
+        media_type="text/html",
+        headers={"Content-Disposition": f"attachment; filename={filename}"},
+    )

@@ -10,13 +10,16 @@ export function CommandSearchModal({ isOpen, onClose }: CommandSearchModalProps)
   const [query, setQuery] = useState('');
 
   const commands = [
-    { title: 'Create Security Project', desc: 'Open 3-step project wizard', icon: '➕', category: 'Action' },
-    { title: 'E-Commerce Cloud Microservices', desc: 'Open project workspace', icon: '📁', category: 'Projects' },
-    { title: 'Healthcare Patient Portal Spec', desc: 'Open project workspace', icon: '📁', category: 'Projects' },
-    { title: 'FinTech Banking Auth Engine', desc: 'Open project workspace', icon: '📁', category: 'Projects' },
-    { title: 'STRIDE Threat Model Engine', desc: 'Inspect threat vectors', icon: '🛡️', category: 'Tools' },
-    { title: 'Terraform IaC Generator', desc: 'Inspect IaC blueprints', icon: '🏗️', category: 'Tools' },
-    { title: 'User Profile & API Keys', desc: 'Manage account security', icon: '⚙️', category: 'Settings' },
+    { title: 'Create Security Project', desc: 'Open 3-step project wizard', icon: '➕', category: 'Action', shortcut: '⌘N' },
+    { title: 'Export Package Archive', desc: 'Compile ZIP, Markdown, PDF or JSON', icon: '📦', category: 'Export', shortcut: '⌘⇧E' },
+    { title: 'Save Active Security Document', desc: 'Persist current artifact to database', icon: '💾', category: 'Workspace', shortcut: '⌘S' },
+    { title: 'Toggle AI Copilot Assistant', desc: 'Context-aware security assistant', icon: '🤖', category: 'AI', shortcut: '⌘I' },
+    { title: 'E-Commerce Cloud Microservices', desc: 'Open project workspace', icon: '📁', category: 'Projects', shortcut: '' },
+    { title: 'Healthcare Patient Portal Spec', desc: 'Open project workspace', icon: '📁', category: 'Projects', shortcut: '' },
+    { title: 'FinTech Banking Auth Engine', desc: 'Open project workspace', icon: '📁', category: 'Projects', shortcut: '' },
+    { title: 'STRIDE Threat Model Engine', desc: 'Inspect threat vectors', icon: '🛡️', category: 'Tools', shortcut: '' },
+    { title: 'Terraform IaC Generator', desc: 'Inspect IaC blueprints', icon: '🏗️', category: 'Tools', shortcut: '' },
+    { title: 'User Profile & API Keys', desc: 'Manage account security', icon: '⚙️', category: 'Settings', shortcut: '' },
   ];
 
   const filtered = commands.filter(
@@ -36,7 +39,7 @@ export function CommandSearchModal({ isOpen, onClose }: CommandSearchModalProps)
           <input
             type="text"
             autoFocus
-            placeholder="Type a command or search projects..."
+            placeholder="Type a command or search projects... (⌘K)"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full bg-transparent text-sm text-white placeholder-slate-500 focus:outline-none"
@@ -64,9 +67,16 @@ export function CommandSearchModal({ isOpen, onClose }: CommandSearchModalProps)
                     <p className="text-[11px] text-slate-400">{cmd.desc}</p>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono text-slate-500 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
-                  {cmd.category}
-                </span>
+                <div className="flex items-center gap-2">
+                  {cmd.shortcut && (
+                    <kbd className="text-[10px] font-mono text-slate-400 bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">
+                      {cmd.shortcut}
+                    </kbd>
+                  )}
+                  <span className="text-[10px] font-mono text-slate-500 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
+                    {cmd.category}
+                  </span>
+                </div>
               </button>
             ))
           ) : (

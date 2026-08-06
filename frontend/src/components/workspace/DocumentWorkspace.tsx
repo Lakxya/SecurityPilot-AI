@@ -164,7 +164,7 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
     });
   };
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     setIsSaving(true);
     try {
       await generationService.saveDocument(projectId, activeTab, documentContent);
@@ -180,7 +180,27 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
       setIsSaving(false);
       setIsEditing(false);
     }
-  };
+  }, [projectId, activeTab, documentContent, showToast, refreshProjectDocs, loadDocument]);
+
+  // Global Keyboard Shortcuts (Cmd+S, Cmd+Shift+E, Esc)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isCmdOrCtrl = e.metaKey || e.ctrlKey;
+      if (isCmdOrCtrl && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        handleSave();
+      } else if (isCmdOrCtrl && e.shiftKey && e.key.toLowerCase() === 'e') {
+        e.preventDefault();
+        setIsExportModalOpen(true);
+      } else if (e.key === 'Escape') {
+        setIsExportModalOpen(false);
+        setIsRegenModalOpen(false);
+        setIsVersionPanelOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleSave]);
 
   return (
     <div className="flex h-screen bg-slate-950 text-slate-100 font-sans overflow-hidden">
@@ -305,7 +325,7 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
 
             {isEditing && (
               <Button variant="emerald" size="sm" onClick={handleSave} disabled={isSaving}>
-                {isSaving ? 'Saving...' : 'Save Edits'}
+                {isSaving ? 'Saving...' : 'Save Edits [⌘S]'}
               </Button>
             )}
 
@@ -316,7 +336,7 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
               onClick={() => setIsExportModalOpen(true)}
               icon={<span>📦</span>}
             >
-              Export
+              Export [⌘⇧E]
             </Button>
 
             {/* Regenerate Single Document Button */}

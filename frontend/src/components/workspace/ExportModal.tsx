@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
 import { exportService } from '../../services/exportService';
+import { useToast } from '../../hooks/useToast';
 
 export interface ExportModalProps {
   isOpen: boolean;
@@ -11,7 +12,8 @@ export interface ExportModalProps {
 }
 
 export function ExportModal({ isOpen, onClose, projectId, projectName }: ExportModalProps) {
-  const [selectedFormat, setSelectedFormat] = useState<'zip' | 'bundle' | 'json'>('zip');
+  const { showToast } = useToast();
+  const [selectedFormat, setSelectedFormat] = useState<'zip' | 'bundle' | 'json' | 'pdf'>('zip');
   const [isExporting, setIsExporting] = useState(false);
 
   const handleExport = async () => {
@@ -19,13 +21,20 @@ export function ExportModal({ isOpen, onClose, projectId, projectName }: ExportM
     try {
       if (selectedFormat === 'zip') {
         await exportService.downloadZipExport(projectId, projectName);
+        showToast('success', 'ZIP Export Complete', 'Downloaded full project repository archive.');
       } else if (selectedFormat === 'bundle') {
         await exportService.downloadBundleExport(projectId, projectName);
+        showToast('success', 'Markdown Bundle Complete', 'Downloaded consolidated specification document.');
+      } else if (selectedFormat === 'pdf') {
+        await exportService.downloadPdfReport(projectId, projectName);
+        showToast('success', 'PDF Report Complete', 'Downloaded printable executive security report.');
       } else {
         await exportService.downloadJsonExport(projectId, projectName);
+        showToast('success', 'JSON Spec Complete', 'Downloaded machine-readable JSON specification.');
       }
       onClose();
     } catch (err) {
+      showToast('error', 'Export Failed', 'Unable to compile export package.');
       console.error('Export failed:', err);
     } finally {
       setIsExporting(false);
@@ -45,24 +54,30 @@ export function ExportModal({ isOpen, onClose, projectId, projectName }: ExportM
           <label className="block text-xs font-medium text-slate-300">
             Select Export Package Format
           </label>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 font-mono">
             {[
               {
                 id: 'zip',
                 title: 'ZIP Archive',
-                desc: 'Complete 13-artifact repository layout (README, docs, docker, k8s, terraform, ci)',
+                desc: 'Complete 13-artifact repository layout',
                 icon: '📦',
               },
               {
                 id: 'bundle',
                 title: 'Markdown Bundle',
-                desc: 'Single consolidated Markdown security specification document',
+                desc: 'Single consolidated Markdown specification',
                 icon: '📜',
+              },
+              {
+                id: 'pdf',
+                title: 'PDF Report',
+                desc: 'Printable executive compliance audit report',
+                icon: '📄',
               },
               {
                 id: 'json',
                 title: 'JSON Spec',
-                desc: 'Structured machine-readable JSON specification format',
+                desc: 'Machine-readable JSON specification format',
                 icon: '🔌',
               },
             ].map((fmt) => {
@@ -71,18 +86,18 @@ export function ExportModal({ isOpen, onClose, projectId, projectName }: ExportM
                 <button
                   key={fmt.id}
                   type="button"
-                  onClick={() => setSelectedFormat(fmt.id as 'zip' | 'bundle' | 'json')}
-                  className={`p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between ${
+                  onClick={() => setSelectedFormat(fmt.id as 'zip' | 'bundle' | 'json' | 'pdf')}
+                  className={`p-3 rounded-xl border text-left transition-all flex flex-col justify-between ${
                     isSelected
                       ? 'bg-indigo-600/20 border-indigo-500/50 text-white'
                       : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
                   }`}
                 >
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-lg">{fmt.icon}</span>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-base">{fmt.icon}</span>
                     <span className="text-xs font-bold">{fmt.title}</span>
                   </div>
-                  <p className="text-[10px] text-slate-500 line-clamp-3 leading-relaxed">
+                  <p className="text-[10px] text-slate-500 line-clamp-2 leading-relaxed">
                     {fmt.desc}
                   </p>
                 </button>
@@ -94,7 +109,7 @@ export function ExportModal({ isOpen, onClose, projectId, projectName }: ExportM
         {/* Action Controls */}
         <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
           <span className="text-[10px] font-mono text-slate-500">
-            Includes manifest checksum metadata
+            Press <kbd className="px-1 py-0.5 bg-slate-800 border border-slate-700 rounded text-slate-300">Esc</kbd> to cancel
           </span>
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="sm" onClick={onClose}>
@@ -107,7 +122,7 @@ export function ExportModal({ isOpen, onClose, projectId, projectName }: ExportM
               disabled={isExporting}
               icon={<span>⬇️</span>}
             >
-              {isExporting ? 'Compiling Archive...' : 'Download Export Package'}
+              {isExporting ? 'Compiling Package...' : 'Download Export Package'}
             </Button>
           </div>
         </div>
