@@ -23,12 +23,26 @@ class GenerationService:
         # 1. Fetch & authorize project workspace
         project = await self.project_service.get_project(project_id, user_id)
 
-        # 2. Build system and user prompts
+        # 2. Resolve Provider Precedence Hierarchy
+        # Priority 1: Explicit Multi-Provider Workspace Matrix Assignment
+        assignments = project.provider_assignments or {}
+        assigned = assignments.get(doc_type.upper())
+        resolved_provider_name = provider_name
+
+        if assigned and assigned.get("provider"):
+            resolved_provider_name = assigned.get("provider", provider_name).lower()
+        else:
+            # Priority 2: Intelligent Recommendation Engine Fallback
+            from app.services.ai.recommendation_engine import ProviderRecommendationService
+            rec = ProviderRecommendationService.recommend_for_project(project, doc_type)
+            resolved_provider_name = rec.recommended_provider.lower()
+
+        # 3. Build system and user prompts
         system_prompt = PromptSynthesizer.build_system_prompt(project, doc_type)
         user_prompt = PromptSynthesizer.build_user_prompt(doc_type, custom_instructions)
 
-        # 3. Initialize streaming LLM provider
-        provider = LLMFactory.get_provider(provider_name)
+        # 4. Initialize streaming LLM provider
+        provider = LLMFactory.get_provider(resolved_provider_name)
 
         full_content = []
         async for chunk in provider.generate_stream(

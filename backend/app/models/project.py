@@ -17,6 +17,7 @@ class Project(Base):
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     tech_stack: Mapped[dict | None] = mapped_column(JSON, default=dict, nullable=True)
     compliance_frameworks: Mapped[list | None] = mapped_column(JSON, default=list, nullable=True)
+    provider_assignments: Mapped[dict | None] = mapped_column(JSON, default=dict, nullable=True)
     status: Mapped[str] = mapped_column(String(30), default="ACTIVE", nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False

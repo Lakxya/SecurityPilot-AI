@@ -7,6 +7,7 @@ import { CopilotPanel } from '../copilot/CopilotPanel';
 import { CodeViewer } from '../common/CodeViewer';
 import { EmptyState } from '../common/EmptyState';
 import { RecommendationCard } from '../vault/RecommendationCard';
+import { ProviderAssignmentPanel } from './ProviderAssignmentPanel';
 import { useSSEStream } from '../../hooks/useSSEStream';
 import { useToast } from '../../hooks/useToast';
 import { generationService } from '../../services/generationService';
@@ -55,6 +56,7 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
   // Single Document Regeneration Modal State
   const [isRegenModalOpen, setIsRegenModalOpen] = useState(false);
   const [customInstructions, setCustomInstructions] = useState('');
+  const [isProviderPanelOpen, setIsProviderPanelOpen] = useState(false);
 
   // Generated documents lookup map for file tree
   const [generatedMap, setGeneratedMap] = useState<Record<string, number>>({});
@@ -330,6 +332,16 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
               </Button>
             )}
 
+            {/* Multi-Provider Assignment Matrix Button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsProviderPanelOpen(true)}
+              icon={<span>🤖</span>}
+            >
+              AI Matrix
+            </Button>
+
             {/* Export Package Button */}
             <Button
               variant="outline"
@@ -523,6 +535,13 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
         onClose={() => setIsExportModalOpen(false)}
         projectId={projectId}
         projectName={projectName}
+      />
+
+      {/* Multi-Provider Assignment Panel Modal */}
+      <ProviderAssignmentPanel
+        isOpen={isProviderPanelOpen}
+        onClose={() => setIsProviderPanelOpen(false)}
+        projectId={projectId}
       />
     </div>
   );
