@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/ui/Button';
+import { SecurityMesh3D } from '../components/common/SecurityMesh3D';
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -32,8 +33,9 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans selection:bg-indigo-500/30">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center space-y-2">
+    <div className="min-h-screen bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans selection:bg-indigo-500/30 relative overflow-hidden">
+      <SecurityMesh3D />
+      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center space-y-2 relative z-10">
         <Link to="/" className="inline-flex items-center gap-2.5 group">
           <div className="w-10 h-10 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-bold text-xl group-hover:bg-indigo-600/30 transition-all">
             🛡️

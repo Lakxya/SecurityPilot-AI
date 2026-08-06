@@ -9,6 +9,7 @@ import { CreateProjectModal } from '../components/dashboard/CreateProjectModal';
 import { CommandSearchModal } from '../components/dashboard/CommandSearchModal';
 import { DocumentWorkspace } from '../components/workspace/DocumentWorkspace';
 import { Badge } from '../components/common/Badge';
+import { CyberShield3D } from '../components/common/CyberShield3D';
 
 export function DashboardPage() {
   const { user } = useAuth();
@@ -75,8 +76,8 @@ export function DashboardPage() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <Badge variant="emerald" size="sm">
-                    Sprint 7 Document Workspace Engine Active
+                  <Badge variant="emerald" size="sm" pulse>
+                    Autonomous Security Engine Active
                   </Badge>
                   <span className="text-[11px] font-mono text-slate-400">
                     Role Scope: {user?.role || 'SECURITY_ENGINEER'}
@@ -89,6 +90,8 @@ export function DashboardPage() {
                   Your authenticated SecurityPilotAI workspace is initialized. Ready to generate, inspect, and audit your 13 security architecture blueprints.
                 </p>
               </div>
+
+              <CyberShield3D size={75} className="shrink-0 hidden sm:block opacity-90" />
             </div>
           </div>
 
