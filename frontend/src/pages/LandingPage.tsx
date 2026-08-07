@@ -20,6 +20,8 @@ import { Button } from '../components/ui/Button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/common/Badge';
 import { CyberGridBackground } from '../components/common/CyberGridBackground';
+import { HeroVideoBackground } from '../components/common/HeroVideoBackground';
+import { InteractiveArchitectureGraph } from '../components/common/InteractiveArchitectureGraph';
 
 export function LandingPage() {
   const navigate = useNavigate();
@@ -130,46 +132,63 @@ export function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-indigo-500/30 selection:text-indigo-200 relative animate-page-entry">
-      {/* Ambient Animated Cyber Grid & Cursor Spotlight */}
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-indigo-500/30 selection:text-indigo-200 relative animate-page-entry overflow-x-hidden">
+      {/* Phase A & C: Cyber Grid & Cursor Spotlight */}
       <CyberGridBackground />
 
       {/* Top Navbar */}
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-20 pb-24 overflow-hidden border-b border-slate-800/60">
+      <section className="relative pt-20 pb-24 border-b border-slate-800/60">
+        {/* Phase 5: Hero Video Player with Graceful Fallback */}
+        <HeroVideoBackground />
+
         {/* Background Ambient Glows */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-indigo-600/15 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute top-1/3 left-1/3 w-[400px] h-[250px] bg-cyan-600/10 blur-[100px] rounded-full pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 shadow-inner mb-8">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs font-medium text-slate-300">Sprint 1 Foundation Active</span>
-            <span className="text-slate-600">|</span>
-            <span className="text-xs font-medium text-emerald-400">Autonomous Security Engineering</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-10">
+          <div>
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 shadow-inner mb-8">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-xs font-medium text-slate-300">Sprint 11 Immersive AI Engine Active</span>
+              <span className="text-slate-600">|</span>
+              <span className="text-xs font-medium text-emerald-400">Autonomous Security Platform</span>
+            </div>
+
+            {/* Main Headline */}
+            <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-[1.15]">
+              Autonomous Security Architecture & <span className="bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">Infrastructure Copilot</span>
+            </h1>
+
+            {/* Description */}
+            <p className="mt-6 text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+              Automatically design, analyze, generate, and document production-grade secure software architectures, STRIDE threat models, and hardened Terraform infrastructure in seconds.
+            </p>
+
+            {/* CTAs */}
+            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button variant="emerald" size="lg" onClick={() => navigate('/register')} icon={<Rocket className="w-4 h-4" />}>
+                Get Started Free
+              </Button>
+              <Button variant="outline" size="lg" onClick={() => navigate('/login')} icon={<BookOpen className="w-4 h-4" />}>
+                Sign In to Workspace
+              </Button>
+            </div>
           </div>
 
-          {/* Main Headline */}
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-[1.15]">
-            Autonomous Security Architecture & <span className="bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">Infrastructure Copilot</span>
-          </h1>
-
-          {/* Description */}
-          <p className="mt-6 text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            Automatically design, analyze, generate, and document production-grade secure software architectures, STRIDE threat models, and hardened Terraform infrastructure in seconds.
-          </p>
-
-          {/* CTAs */}
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button variant="emerald" size="lg" onClick={() => navigate('/register')} icon={<Rocket className="w-4 h-4" />}>
-              Get Started Free
-            </Button>
-            <Button variant="outline" size="lg" onClick={() => navigate('/login')} icon={<BookOpen className="w-4 h-4" />}>
-              Sign In to Workspace
-            </Button>
+          {/* Phase 1 & 6: Interactive Cloud Architecture Node Graph */}
+          <div className="max-w-5xl mx-auto pt-4">
+            <div className="flex items-center justify-between px-2 pb-3 text-xs font-mono text-slate-400">
+              <span className="flex items-center gap-2 font-bold text-white">
+                <ShieldCheck className="w-4 h-4 text-indigo-400" />
+                <span>Interactive Cloud Architecture Graph</span>
+              </span>
+              <span className="text-emerald-400">● Hover nodes to inspect encrypted connection flows</span>
+            </div>
+            <InteractiveArchitectureGraph />
           </div>
 
           {/* Interactive Preview Canvas Placeholder */}

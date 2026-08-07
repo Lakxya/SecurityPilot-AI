@@ -29,6 +29,8 @@ import { EmptyState } from '../common/EmptyState';
 import { RecommendationCard } from '../vault/RecommendationCard';
 import { ProviderAssignmentPanel } from './ProviderAssignmentPanel';
 import { CompareView } from './CompareView';
+import { AIThinkingPipeline } from '../common/AIThinkingPipeline';
+import { TerminalTypingStream } from '../common/TerminalTypingStream';
 import { useSSEStream } from '../../hooks/useSSEStream';
 import { useToast } from '../../hooks/useToast';
 import { generationService } from '../../services/generationService';
@@ -432,13 +434,19 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
             </div>
           ) : (
             /* Single Document View / Editor */
-            <div className="max-w-5xl mx-auto min-h-[550px] flex flex-col">
-              {documentContent.includes('is not yet generated') ? (
+            <div className="max-w-5xl mx-auto min-h-[550px] flex flex-col space-y-6">
+              {isStreaming ? (
+                <div className="my-auto space-y-6">
+                  <AIThinkingPipeline isLoading={isStreaming} />
+                  <TerminalTypingStream title={`stream-${activeTab.toLowerCase()}.log`} />
+                </div>
+              ) : documentContent.includes('is not yet generated') ? (
                 <EmptyState
                   icon={<ShieldCheck className="w-7 h-7 text-indigo-400" />}
                   title={`Artifact ${activeTab} Not Generated`}
                   description={`The ${activeTab} security specification is not yet compiled for ${projectName}.`}
                   actionLabel="Generate with AI"
+                  secondaryHint={`Tip: Assign a model to ${activeTab} in AI Matrix or use Recommendation Engine.`}
                   onAction={() => handleGenerate()}
                   className="my-auto"
                 />
