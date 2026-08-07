@@ -8,6 +8,7 @@ import { CodeViewer } from '../common/CodeViewer';
 import { EmptyState } from '../common/EmptyState';
 import { RecommendationCard } from '../vault/RecommendationCard';
 import { ProviderAssignmentPanel } from './ProviderAssignmentPanel';
+import { CompareView } from './CompareView';
 import { useSSEStream } from '../../hooks/useSSEStream';
 import { useToast } from '../../hooks/useToast';
 import { generationService } from '../../services/generationService';
@@ -57,6 +58,7 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
   const [isRegenModalOpen, setIsRegenModalOpen] = useState(false);
   const [customInstructions, setCustomInstructions] = useState('');
   const [isProviderPanelOpen, setIsProviderPanelOpen] = useState(false);
+  const [isCompareModeOpen, setIsCompareModeOpen] = useState(false);
 
   // Generated documents lookup map for file tree
   const [generatedMap, setGeneratedMap] = useState<Record<string, number>>({});
@@ -342,6 +344,16 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
               AI Matrix
             </Button>
 
+            {/* AI Compare Mode Overlay Button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsCompareModeOpen(true)}
+              icon={<span>⚔️</span>}
+            >
+              Compare
+            </Button>
+
             {/* Export Package Button */}
             <Button
               variant="outline"
@@ -543,6 +555,19 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
         onClose={() => setIsProviderPanelOpen(false)}
         projectId={projectId}
       />
+
+      {/* AI Compare Mode Overlay View */}
+      {isCompareModeOpen && (
+        <CompareView
+          projectId={projectId}
+          artifact={activeTab}
+          onClose={() => setIsCompareModeOpen(false)}
+          onSelectWinnerContent={(winnerContent) => {
+            setDocumentContent(winnerContent);
+            setIsEditing(true);
+          }}
+        />
+      )}
     </div>
   );
 }
