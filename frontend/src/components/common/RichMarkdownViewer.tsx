@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Copy, Check, CheckSquare, Square } from 'lucide-react';
 import { useToast } from '../../hooks/useToast';
 
 export interface RichMarkdownViewerProps {
@@ -29,9 +30,10 @@ export function RichMarkdownViewer({ content, className = '' }: RichMarkdownView
         </div>
         <button
           onClick={handleCopyAll}
-          className="hover:text-white flex items-center gap-1 font-bold transition-colors"
+          className="hover:text-white flex items-center gap-1.5 font-bold transition-colors cursor-pointer"
         >
-          <span>{copied ? '✓ Copied' : '📋 Copy Output'}</span>
+          {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+          <span>{copied ? 'Copied' : 'Copy Output'}</span>
         </button>
       </div>
 
@@ -48,9 +50,11 @@ export function RichMarkdownViewer({ content, className = '' }: RichMarkdownView
             const isChecked = line.startsWith('- [x] ');
             return (
               <div key={idx} className="flex items-center gap-2 pl-2 text-slate-300">
-                <span className={isChecked ? 'text-emerald-400 font-bold' : 'text-slate-500'}>
-                  {isChecked ? '☑' : '☐'}
-                </span>
+                {isChecked ? (
+                  <CheckSquare className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                ) : (
+                  <Square className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                )}
                 <span>{line.slice(6)}</span>
               </div>
             );

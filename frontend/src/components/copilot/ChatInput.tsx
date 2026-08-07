@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Zap, Send } from 'lucide-react';
 import { Button } from '../ui/Button';
 
 export interface ChatInputProps {
@@ -40,9 +41,10 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
             type="button"
             disabled={disabled}
             onClick={() => handleChipClick(chip)}
-            className="px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-400 hover:text-indigo-300 hover:border-indigo-500/40 transition-colors whitespace-nowrap"
+            className="px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-400 hover:text-indigo-300 hover:border-indigo-500/40 transition-colors whitespace-nowrap flex items-center gap-1 cursor-pointer"
           >
-            ⚡ {chip}
+            <Zap className="w-3 h-3 text-indigo-400" />
+            <span>{chip}</span>
           </button>
         ))}
       </div>
@@ -62,7 +64,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
           variant="emerald"
           size="sm"
           disabled={disabled || !text.trim()}
-          icon={<span>➔</span>}
+          icon={<Send className="w-3.5 h-3.5" />}
         >
           Send
         </Button>

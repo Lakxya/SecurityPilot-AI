@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ShieldCheck } from 'lucide-react';
 import { Button } from '../ui/Button';
 
 export function Navbar() {
@@ -14,7 +15,7 @@ export function Navbar() {
           <div className="flex items-center gap-3">
             <a href="#" className="flex items-center gap-2.5 group">
               <div className="w-9 h-9 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-bold text-lg group-hover:bg-indigo-600/30 group-hover:border-indigo-500/50 transition-all">
-                🛡️
+                <ShieldCheck className="w-5 h-5 text-indigo-400" />
               </div>
               <span className="font-bold text-lg text-white tracking-tight group-hover:text-indigo-300 transition-colors">
                 SecurityPilot<span className="text-indigo-400">AI</span>

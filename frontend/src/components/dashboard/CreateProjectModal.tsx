@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Rocket } from 'lucide-react';
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
 import { projectService } from '../../services/projectService';
@@ -249,9 +250,10 @@ export function CreateProjectModal({ isOpen, onClose, onSuccess }: CreateProject
               Next: Tech Stack →
             </Button>
           ) : (
-            <Button variant="emerald" size="sm" onClick={handleComplete} disabled={isSubmitting}>
-              {isSubmitting ? 'Creating Project...' : '🚀 Create Project Workspace'}
+            <Button variant="emerald" size="sm" onClick={handleComplete} disabled={isSubmitting} icon={<Rocket className="w-3.5 h-3.5" />}>
+              {isSubmitting ? 'Creating Project...' : 'Create Project Workspace'}
             </Button>
+
           )}
         </div>
       </div>

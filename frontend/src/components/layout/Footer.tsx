@@ -1,3 +1,4 @@
+import { ShieldCheck } from 'lucide-react';
 import { Badge } from '../common/Badge';
 
 export function Footer() {
@@ -9,7 +10,7 @@ export function Footer() {
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-bold text-base">
-                🛡️
+                <ShieldCheck className="w-4 h-4 text-indigo-400" />
               </div>
               <span className="font-bold text-lg text-white tracking-tight">
                 SecurityPilot<span className="text-indigo-400">AI</span>

@@ -1,5 +1,19 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  ShieldCheck,
+  Search,
+  Lock,
+  Building2,
+  Bot,
+  Zap,
+  BookOpen,
+  FileText,
+  Rocket,
+  Star,
+  Check,
+  AlertTriangle,
+} from 'lucide-react';
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
 import { Button } from '../components/ui/Button';
@@ -23,37 +37,37 @@ export function LandingPage() {
 
   const features = [
     {
-      icon: '🛡️',
+      icon: <ShieldCheck className="w-5 h-5 text-indigo-400" />,
       badge: 'Security First',
       title: 'Automated Security Architecture',
       description: 'Instantly generate complete, secure-by-default software design documents (SRS, SDS, API Specs) tailored to your exact tech stack.',
     },
     {
-      icon: '🔍',
+      icon: <Search className="w-5 h-5 text-emerald-400" />,
       badge: 'STRIDE Framework',
       title: 'Automated Threat Modeling',
       description: 'Identify architectural attack vectors, spoofing risks, and elevation-of-privilege threats with automated CVSS vulnerability scoring.',
     },
     {
-      icon: '🔐',
+      icon: <Lock className="w-5 h-5 text-cyan-400" />,
       badge: 'OWASP Top 10',
       title: 'Vulnerability Review & Remediation',
       description: 'Audit your architecture against Injection, Broken Auth, SSRF, and Cryptographic Failures with copy-paste remediation patterns.',
     },
     {
-      icon: '🏗️',
+      icon: <Building2 className="w-5 h-5 text-amber-400" />,
       badge: 'Infrastructure as Code',
       title: 'Hardened Terraform & K8s Manifests',
       description: 'Generate production-ready HCL scripts, Helm charts, and Distroless Dockerfiles configured with non-root security profiles.',
     },
     {
-      icon: '🤖',
+      icon: <Bot className="w-5 h-5 text-purple-400" />,
       badge: 'Context Aware',
       title: 'Interactive Security Copilot',
       description: 'Ask real-time security architectural questions, refine database encryption schemes, and validate compliance rules inline.',
     },
     {
-      icon: '⚡',
+      icon: <Zap className="w-5 h-5 text-rose-400" />,
       badge: '1-Click Export',
       title: 'Multi-Format Archiving & Sync',
       description: 'Export your complete security architecture as a structured ZIP archive, consolidated Markdown bundle, or push directly to GitHub.',
@@ -146,10 +160,10 @@ export function LandingPage() {
 
           {/* CTAs */}
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button variant="emerald" size="lg" onClick={() => navigate('/register')} icon={<span>🚀</span>}>
+            <Button variant="emerald" size="lg" onClick={() => navigate('/register')} icon={<Rocket className="w-4 h-4" />}>
               Get Started Free
             </Button>
-            <Button variant="outline" size="lg" onClick={() => navigate('/login')} icon={<span>📖</span>}>
+            <Button variant="outline" size="lg" onClick={() => navigate('/login')} icon={<BookOpen className="w-4 h-4" />}>
               Sign In to Workspace
             </Button>
           </div>
@@ -167,27 +181,30 @@ export function LandingPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setActiveTab('threat')}
-                  className={`text-xs px-2.5 py-1 rounded transition-colors ${
+                  className={`text-xs px-2.5 py-1 rounded transition-colors flex items-center gap-1.5 cursor-pointer ${
                     activeTab === 'threat' ? 'bg-indigo-600/30 text-indigo-300 border border-indigo-500/40' : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  🛡️ Threat Model
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Threat Model</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('srs')}
-                  className={`text-xs px-2.5 py-1 rounded transition-colors ${
+                  className={`text-xs px-2.5 py-1 rounded transition-colors flex items-center gap-1.5 cursor-pointer ${
                     activeTab === 'srs' ? 'bg-indigo-600/30 text-indigo-300 border border-indigo-500/40' : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  📄 SRS Spec
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>SRS Spec</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('terraform')}
-                  className={`text-xs px-2.5 py-1 rounded transition-colors ${
+                  className={`text-xs px-2.5 py-1 rounded transition-colors flex items-center gap-1.5 cursor-pointer ${
                     activeTab === 'terraform' ? 'bg-indigo-600/30 text-indigo-300 border border-indigo-500/40' : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  🏗️ Terraform IaC
+                  <Building2 className="w-3.5 h-3.5" />
+                  <span>Terraform IaC</span>
                 </button>
               </div>
             </div>
@@ -197,8 +214,14 @@ export function LandingPage() {
               {activeTab === 'threat' && (
                 <div className="space-y-2">
                   <span className="text-slate-400"># STRIDE Threat Model Analysis — E-Commerce API</span>
-                  <p className="text-emerald-400">✔ Threat Vector Identified: Unencrypted Transit Vector in Payment Gateway</p>
-                  <p className="text-amber-400">⚠ Mitigation Control Required: Enforce TLS 1.3 with AES-256-GCM cipher suite</p>
+                  <p className="text-emerald-400 flex items-center gap-1.5">
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Threat Vector Identified: Unencrypted Transit Vector in Payment Gateway</span>
+                  </p>
+                  <p className="text-amber-400 flex items-center gap-1.5">
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Mitigation Control Required: Enforce TLS 1.3 with AES-256-GCM cipher suite</span>
+                  </p>
                   <div className="pt-2 text-slate-400">
                     <table className="w-full text-left border-collapse border border-slate-800">
                       <thead>
@@ -375,7 +398,8 @@ export function LandingPage() {
                     <td className="p-4 sm:p-5 font-medium text-white">{row.feature}</td>
                     <td className="p-4 sm:p-5 text-slate-400">{row.manual}</td>
                     <td className="p-4 sm:p-5 text-emerald-400 font-semibold flex items-center gap-2">
-                      <span>✔</span> {row.securityPilot}
+                      <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>{row.securityPilot}</span>
                     </td>
                   </tr>
                 ))}
@@ -434,10 +458,10 @@ export function LandingPage() {
             Join developers, SecOps engineers, and founders streamlining secure software delivery with SecurityPilotAI.
           </p>
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button variant="emerald" size="lg" icon={<span>🚀</span>}>
+            <Button variant="emerald" size="lg" onClick={() => navigate('/register')} icon={<Rocket className="w-4 h-4" />}>
               Get Started Free
             </Button>
-            <Button variant="secondary" size="lg" icon={<span>⭐</span>}>
+            <Button variant="secondary" size="lg" onClick={() => window.open('https://github.com/Lakxya/SecurityPilot-AI', '_blank')} icon={<Star className="w-4 h-4 text-amber-400" />}>
               Star on GitHub
             </Button>
           </div>

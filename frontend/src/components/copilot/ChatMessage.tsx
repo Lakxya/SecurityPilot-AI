@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { User, ShieldCheck, Check, Copy } from 'lucide-react';
 import { ChatMessageItem } from '../../services/chatService';
 
 export interface ChatMessageProps {
@@ -29,7 +30,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
           isUser ? 'bg-slate-800 text-slate-300' : 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30'
         }`}
       >
-        {isUser ? '👤' : '🛡️'}
+        {isUser ? <User className="w-4 h-4 text-slate-300" /> : <ShieldCheck className="w-4 h-4 text-white" />}
       </div>
 
       {/* Message Body Column */}
@@ -40,9 +41,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
           </span>
           <button
             onClick={handleCopy}
-            className="text-[10px] text-slate-500 hover:text-slate-300 transition-colors font-mono"
+            className="text-[10px] text-slate-500 hover:text-slate-300 transition-colors font-mono flex items-center gap-1 cursor-pointer"
           >
-            {copied ? '✓ Copied' : '📋 Copy'}
+            {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+            <span>{copied ? 'Copied' : 'Copy'}</span>
           </button>
         </div>
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { CheckCircle2, Zap, Circle } from 'lucide-react';
 import { Badge } from '../common/Badge';
 
 export interface GenerationTimelineProps {
@@ -63,7 +64,15 @@ export function GenerationTimeline({ isStreaming, artifact }: GenerationTimeline
                   : 'bg-slate-950 border-slate-850 text-slate-500'
               }`}
             >
-              <span>{isDone ? '✓' : isCurrent ? '⚡' : '○'}</span>
+              <span className="shrink-0">
+                {isDone ? (
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                ) : isCurrent ? (
+                  <Zap className="w-3.5 h-3.5 text-indigo-400 animate-bounce" />
+                ) : (
+                  <Circle className="w-3.5 h-3.5 text-slate-600" />
+                )}
+              </span>
               <span className="truncate">{step}</span>
             </div>
           );

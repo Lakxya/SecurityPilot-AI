@@ -1,5 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  ShieldCheck,
+  LayoutDashboard,
+  FolderGit2,
+  FlaskConical,
+  ShieldAlert,
+  Boxes,
+  History,
+  Settings,
+  Plus,
+} from 'lucide-react';
 import { Badge } from '../common/Badge';
 
 export interface DashboardSidebarProps {
@@ -13,13 +24,13 @@ export function DashboardSidebar({ activeTab, onTabChange, onNewProjectClick }: 
   const [collapsed, setCollapsed] = useState(false);
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
-    { id: 'projects', label: 'Projects', icon: '📁', count: '3' },
-    { id: 'playground', label: 'AI Playground', icon: '🧪' },
-    { id: 'threats', label: 'Threat Engine', icon: '🛡️' },
-    { id: 'iac', label: 'IaC Modules', icon: '☸️' },
-    { id: 'history', label: 'Audit History', icon: '📜' },
-    { id: 'settings', label: 'Settings', icon: '⚙️' },
+    { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
+    { id: 'projects', label: 'Projects', icon: <FolderGit2 className="w-4 h-4" />, count: '3' },
+    { id: 'playground', label: 'AI Playground', icon: <FlaskConical className="w-4 h-4" /> },
+    { id: 'threats', label: 'Threat Engine', icon: <ShieldAlert className="w-4 h-4" /> },
+    { id: 'iac', label: 'IaC Modules', icon: <Boxes className="w-4 h-4" /> },
+    { id: 'history', label: 'Audit History', icon: <History className="w-4 h-4" /> },
+    { id: 'settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> },
   ];
 
   return (
@@ -34,7 +45,7 @@ export function DashboardSidebar({ activeTab, onTabChange, onNewProjectClick }: 
         <div className="h-16 px-4 flex items-center justify-between border-b border-slate-800/80">
           <div className="flex items-center gap-3 overflow-hidden">
             <div className="w-8 h-8 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-bold text-base shrink-0">
-              🛡️
+              <ShieldCheck className="w-5 h-5 text-indigo-400" />
             </div>
             {!collapsed && (
               <span className="font-bold text-base text-white tracking-tight truncate">
@@ -66,7 +77,7 @@ export function DashboardSidebar({ activeTab, onTabChange, onNewProjectClick }: 
             }`}
             title="Create Security Project"
           >
-            <span className="text-sm">+</span>
+            <Plus className="w-4 h-4 shrink-0" />
             {!collapsed && <span>New Project</span>}
           </button>
         </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { FolderGit2, FileText, Zap, ShieldCheck } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/Card';
 import { Badge } from '../common/Badge';
 import { Skeleton } from '../common/Skeleton';
@@ -51,28 +52,28 @@ export function DashboardStats() {
       value: `${statsData?.total_projects || 0}`,
       change: `${statsData?.active_projects || 0} active workspaces`,
       badge: 'emerald',
-      icon: '📁',
+      icon: <FolderGit2 className="w-5 h-5 text-indigo-400" />,
     },
     {
       title: 'Generated Security Specs',
       value: `${statsData?.total_documents || 0}`,
       change: '13 docs / project target',
       badge: 'indigo',
-      icon: '📄',
+      icon: <FileText className="w-5 h-5 text-emerald-400" />,
     },
     {
       title: 'Artifact Completion Rate',
       value: `${statsData?.artifact_completion_pct || 0}%`,
       change: 'Compiled Blueprints',
       badge: 'cyan',
-      icon: '⚡',
+      icon: <Zap className="w-5 h-5 text-cyan-400" />,
     },
     {
       title: 'Security Compliance Score',
       value: statsData?.average_risk_score || '94% Low Risk',
       change: 'OWASP + SOC 2 Targets',
       badge: 'amber',
-      icon: '🛡️',
+      icon: <ShieldCheck className="w-5 h-5 text-amber-400" />,
     },
   ];
 
@@ -82,7 +83,7 @@ export function DashboardStats() {
         <Card key={st.title} className="p-5">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 mb-0">
             <CardTitle className="text-xs font-medium text-slate-400">{st.title}</CardTitle>
-            <span className="text-lg">{st.icon}</span>
+            <span className="shrink-0">{st.icon}</span>
           </CardHeader>
           <CardContent className="pt-2">
             <div className="text-2xl font-bold text-white tracking-tight">{st.value}</div>

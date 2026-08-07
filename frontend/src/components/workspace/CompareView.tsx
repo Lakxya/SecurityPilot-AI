@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { GitCompare, Trophy, Zap, Brain, Link2 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Badge } from '../common/Badge';
 import { CodeViewer } from '../common/CodeViewer';
@@ -81,8 +82,8 @@ export function CompareView({ projectId, artifact, onClose, onSelectWinnerConten
       {/* Top Controls Header */}
       <header className="h-16 border-b border-slate-800 px-6 flex items-center justify-between shrink-0 bg-slate-900/80">
         <div className="flex items-center gap-3">
-          <Badge variant="indigo" size="md">
-            ⚔️ Dual AI Compare Mode
+          <Badge variant="indigo" size="md" icon={<GitCompare className="w-3.5 h-3.5" />}>
+            Dual AI Compare Mode
           </Badge>
           <span className="text-xs font-mono text-slate-300 font-bold">Artifact: {artifact}</span>
         </div>
@@ -92,13 +93,13 @@ export function CompareView({ projectId, artifact, onClose, onSelectWinnerConten
             variant="outline"
             size="sm"
             onClick={() => setIsSyncScroll(!isSyncScroll)}
-            icon={<span>🔗</span>}
+            icon={<Link2 className="w-3.5 h-3.5" />}
           >
             Sync Scroll: {isSyncScroll ? 'ON' : 'OFF'}
           </Button>
 
           {summary && (
-            <Button variant="emerald" size="sm" onClick={handleApplyWinner} icon={<span>🏆</span>}>
+            <Button variant="emerald" size="sm" onClick={handleApplyWinner} icon={<Trophy className="w-3.5 h-3.5" />}>
               Apply Winner Output
             </Button>
           )}
@@ -118,7 +119,7 @@ export function CompareView({ projectId, artifact, onClose, onSelectWinnerConten
           <div className="bg-emerald-950/30 border border-emerald-500/40 rounded-xl p-4 flex items-center justify-between font-mono text-xs shadow-xl">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="text-base">🏆</span>
+                <Trophy className="w-4 h-4 text-amber-400" />
                 <span className="font-extrabold text-emerald-300">
                   Overall Winner: {summary.winner_provider.toUpperCase()}
                 </span>
@@ -137,7 +138,7 @@ export function CompareView({ projectId, artifact, onClose, onSelectWinnerConten
           <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 flex flex-col space-y-3 font-mono">
             <div className="flex items-center justify-between border-b border-slate-800 pb-2">
               <div className="flex items-center gap-2">
-                <span className="text-base">⚡</span>
+                <Zap className="w-4 h-4 text-indigo-400" />
                 <span className="font-bold text-white text-xs">OpenAI (GPT-4o)</span>
               </div>
               <Badge variant="indigo" size="sm">
@@ -160,7 +161,7 @@ export function CompareView({ projectId, artifact, onClose, onSelectWinnerConten
           <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 flex flex-col space-y-3 font-mono">
             <div className="flex items-center justify-between border-b border-slate-800 pb-2">
               <div className="flex items-center gap-2">
-                <span className="text-base">🧠</span>
+                <Brain className="w-4 h-4 text-emerald-400" />
                 <span className="font-bold text-white text-xs">Anthropic (Claude 3.5 Sonnet)</span>
               </div>
               <Badge variant="emerald" size="sm">

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FlaskConical, BookOpen, Zap, ArrowLeft } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/common/Badge';
 import { RichMarkdownViewer } from '../components/common/RichMarkdownViewer';
@@ -50,14 +51,14 @@ export function PlaygroundPage() {
         <div className="flex items-center gap-3 font-mono">
           <button
             onClick={() => navigate('/dashboard')}
-            className="text-xs text-slate-400 hover:text-white flex items-center gap-2 font-medium transition-colors"
+            className="text-xs text-slate-400 hover:text-white flex items-center gap-1.5 font-medium transition-colors cursor-pointer"
           >
-            <span>←</span>
+            <ArrowLeft className="w-3.5 h-3.5" />
             <span>Dashboard</span>
           </button>
           <span className="text-slate-600">/</span>
           <span className="text-sm font-bold text-white flex items-center gap-2">
-            <span>🧪</span>
+            <FlaskConical className="w-4 h-4 text-indigo-400" />
             <span>AI Playground Sandbox</span>
           </span>
           <Badge variant="emerald" size="sm">
@@ -70,7 +71,7 @@ export function PlaygroundPage() {
             variant="outline"
             size="sm"
             onClick={() => setIsPromptLibraryOpen(true)}
-            icon={<span>📚</span>}
+            icon={<BookOpen className="w-3.5 h-3.5" />}
           >
             Prompt Library
           </Button>
@@ -154,7 +155,7 @@ export function PlaygroundPage() {
               size="sm"
               onClick={handleRunPrompt}
               disabled={isStreaming}
-              icon={<span>⚡</span>}
+              icon={<Zap className="w-3.5 h-3.5" />}
             >
               {isStreaming ? 'Streaming...' : 'Run Prompt'}
             </Button>

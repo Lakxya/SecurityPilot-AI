@@ -1,4 +1,15 @@
 import { useState } from 'react';
+import {
+  ShieldAlert,
+  Scale,
+  Container,
+  Building2,
+  Boxes,
+  Cloud,
+  Siren,
+  Search,
+  Zap,
+} from 'lucide-react';
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
 import { Badge } from '../common/Badge';
@@ -9,7 +20,7 @@ export interface PromptTemplate {
   category: string;
   description: string;
   prompt: string;
-  icon: string;
+  icon: React.ReactNode;
 }
 
 const ENTERPRISE_PROMPTS: PromptTemplate[] = [
@@ -19,7 +30,7 @@ const ENTERPRISE_PROMPTS: PromptTemplate[] = [
     category: 'Threat Modeling',
     description: 'Generates a full STRIDE threat vector matrix with mitigation strategies and CVSS scores.',
     prompt: 'Perform a comprehensive STRIDE threat modeling review of the provided microservices architecture. Group threats by Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, and Elevation of Privilege. Assign CVSS v3.1 impact scores and concrete remediation steps.',
-    icon: '🛡️',
+    icon: <ShieldAlert className="w-4 h-4 text-emerald-400" />,
   },
   {
     id: 'owasp-1',
@@ -27,7 +38,7 @@ const ENTERPRISE_PROMPTS: PromptTemplate[] = [
     category: 'OWASP Review',
     description: 'Audits API routes against BOLA, Broken Authentication, Mass Assignment, and SSRF.',
     prompt: 'Evaluate our OpenAPI specification and API backend against the OWASP Top 10 (2025). Focus on Broken Object Level Authorization (BOLA), Broken Function Level Authorization (BFLA), SSRF risks, and Unrestricted Resource Consumption. Provide recommended security headers and rate-limiting limits.',
-    icon: '⚖️',
+    icon: <Scale className="w-4 h-4 text-indigo-400" />,
   },
   {
     id: 'docker-1',
@@ -35,7 +46,7 @@ const ENTERPRISE_PROMPTS: PromptTemplate[] = [
     category: 'Docker Security',
     description: 'Refactors Dockerfiles to distroless non-root images with SHA-256 digest pinning.',
     prompt: 'Audit and harden the provided Dockerfile. Convert to a multi-stage build using Google Distroless or Alpine non-root execution (UID 10001). Enforce read-only root filesystems, drop Linux capabilities (ALL), and pin base image layers with explicit SHA-256 digest hashes.',
-    icon: '🐳',
+    icon: <Container className="w-4 h-4 text-cyan-400" />,
   },
   {
     id: 'terraform-1',
@@ -43,7 +54,7 @@ const ENTERPRISE_PROMPTS: PromptTemplate[] = [
     category: 'Terraform Review',
     description: 'Enforces CIS AWS Foundations Benchmark standards across Terraform HCL manifests.',
     prompt: 'Audit our Terraform HCL infrastructure scripts against the CIS AWS Foundations Benchmark v3.0. Verify KMS customer-managed keys for EBS/S3, enable AWS CloudTrail multi-region logging, enforce S3 Block Public Access, and remove 0.0.0.0/0 ingress rules from Security Groups.',
-    icon: '🏛️',
+    icon: <Building2 className="w-4 h-4 text-amber-400" />,
   },
   {
     id: 'k8s-1',
@@ -51,7 +62,7 @@ const ENTERPRISE_PROMPTS: PromptTemplate[] = [
     category: 'Kubernetes Audit',
     description: 'Generates Restricted Pod Security Admission policies and zero-trust NetworkPolicies.',
     prompt: 'Review our Kubernetes Deployment manifests. Apply Kubernetes Restricted Pod Security Standards (PSS). Enforce seccomp RuntimeDefault profiles, allowPrivilegeEscalation=false, readOnlyRootFilesystem=true, and generate zero-trust default-deny NetworkPolicies.',
-    icon: '☸️',
+    icon: <Boxes className="w-4 h-4 text-blue-400" />,
   },
   {
     id: 'cloud-1',
@@ -59,7 +70,7 @@ const ENTERPRISE_PROMPTS: PromptTemplate[] = [
     category: 'Cloud Security',
     description: 'Evaluates AWS/Azure multi-cloud security architecture and IAM role least-privilege boundaries.',
     prompt: 'Conduct a Cloud Security Posture Assessment (CSPM) for our multi-cloud microservices architecture. Evaluate IAM role trust policies, Service Control Policies (SCPs), VPC peering boundaries, and GuardDuty / AWS Security Hub alert routing.',
-    icon: '☁️',
+    icon: <Cloud className="w-4 h-4 text-sky-400" />,
   },
   {
     id: 'ir-1',
@@ -67,7 +78,7 @@ const ENTERPRISE_PROMPTS: PromptTemplate[] = [
     category: 'Incident Response',
     description: 'Generates a 6-phase NIST SP 800-61 Rev 2 incident response protocol for compromised credentials.',
     prompt: 'Generate an enterprise Incident Response (IR) playbook for a suspected OAuth2 / JWT credential compromise. Structure steps into Preparation, Identification, Containment, Eradication, Recovery, and Lessons Learned in compliance with NIST SP 800-61 Rev 2.',
-    icon: '🚨',
+    icon: <Siren className="w-4 h-4 text-rose-400" />,
   },
   {
     id: 'soc-1',
@@ -75,7 +86,7 @@ const ENTERPRISE_PROMPTS: PromptTemplate[] = [
     category: 'SOC Analysis',
     description: 'Creates Sigma and YARA rules for detecting unauthorized privilege escalation and lateral movement.',
     prompt: 'Synthesize SIEM detection rules in Sigma YAML format for detecting MITRE ATT&CK technique T1078 (Valid Accounts) and T1059 (Command and Scripting Interpreter). Include syslog, auditd, and AWS CloudTrail query patterns.',
-    icon: '🔍',
+    icon: <Search className="w-4 h-4 text-indigo-300" />,
   },
 ];
 
@@ -137,7 +148,7 @@ export function PromptLibraryModal({ isOpen, onClose, onSelectPrompt }: PromptLi
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-base">{item.icon}</span>
+                    <span className="shrink-0">{item.icon}</span>
                     <span className="font-bold text-white group-hover:text-indigo-300 transition-colors">
                       {item.title}
                     </span>
@@ -162,7 +173,7 @@ export function PromptLibraryModal({ isOpen, onClose, onSelectPrompt }: PromptLi
                     onSelectPrompt(item.prompt);
                     onClose();
                   }}
-                  icon={<span>⚡</span>}
+                  icon={<Zap className="w-3.5 h-3.5" />}
                 >
                   Insert Prompt
                 </Button>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { KeyRound, ShieldCheck, Package, FileText } from 'lucide-react';
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
 import { Badge } from '../common/Badge';
@@ -99,7 +100,7 @@ export function ProviderAssignmentPanel({ isOpen, onClose, projectId }: Provider
           <div className="py-8 text-center text-slate-500">Loading Provider Matrix...</div>
         ) : vaultProviders.length === 0 ? (
           <div className="bg-slate-950 border border-slate-800 rounded-xl p-6 text-center space-y-3">
-            <span className="text-2xl block">🔑</span>
+            <KeyRound className="w-8 h-8 text-indigo-400 mx-auto" />
             <h4 className="font-bold text-white text-sm">No Connected AI Providers</h4>
             <p className="text-slate-400 text-xs max-w-md mx-auto">
               Add your Bring Your Own Key (BYOK) OpenAI, Anthropic, or Ollama credentials in the AI Vault to assign custom models per artifact.
@@ -116,7 +117,13 @@ export function ProviderAssignmentPanel({ isOpen, onClose, projectId }: Provider
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm">
-                      {item.category === 'Security' ? '🛡️' : item.category === 'DevOps' ? '📦' : '📜'}
+                      {item.category === 'Security' ? (
+                        <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                      ) : item.category === 'DevOps' ? (
+                        <Package className="w-4 h-4 text-indigo-400" />
+                      ) : (
+                        <FileText className="w-4 h-4 text-cyan-400" />
+                      )}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">

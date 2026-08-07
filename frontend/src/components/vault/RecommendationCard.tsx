@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Sparkles, Brain, Zap, CheckCircle2 } from 'lucide-react';
 import { Badge } from '../common/Badge';
 import { Button } from '../ui/Button';
 import { recommendationService, ModelRecommendation } from '../../services/recommendationService';
@@ -61,17 +62,19 @@ export function RecommendationCard({ projectId, docType, onApplyModel }: Recomme
       <div className="flex items-start justify-between gap-3 relative z-10">
         <div>
           <div className="flex items-center gap-2 mb-1">
+            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
             <span className="text-xs uppercase tracking-wider text-indigo-400 font-bold">Recommended Model</span>
             <Badge variant="emerald" size="sm">
               {Math.round(recommendation.confidence_score * 100)}% Match
             </Badge>
           </div>
           <h3 className="text-lg font-extrabold text-white flex items-center gap-2">
-            <span>{recommendation.recommended_provider === 'ANTHROPIC' ? '🧠' : '⚡'}</span>
+            {recommendation.recommended_provider === 'ANTHROPIC' ? (
+              <Brain className="w-5 h-5 text-emerald-400" />
+            ) : (
+              <Zap className="w-5 h-5 text-indigo-400" />
+            )}
             <span>{recommendation.recommended_model}</span>
-            <span className="text-amber-400 text-xs tracking-tighter">
-              {'★'.repeat(recommendation.rating_stars)}
-            </span>
           </h3>
         </div>
 
@@ -103,8 +106,9 @@ export function RecommendationCard({ projectId, docType, onApplyModel }: Recomme
         <span className="text-[10px] text-slate-400 uppercase font-bold">Optimal For:</span>
         <div className="flex flex-wrap gap-1">
           {recommendation.best_for_artifacts.map((art) => (
-            <span key={art} className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700">
-              ✓ {art}
+            <span key={art} className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700 flex items-center gap-1">
+              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+              <span>{art}</span>
             </span>
           ))}
         </div>
@@ -112,7 +116,7 @@ export function RecommendationCard({ projectId, docType, onApplyModel }: Recomme
 
       {/* Action Controls */}
       <div className="pt-2 border-t border-slate-800/80 flex items-center justify-end gap-2">
-        <Button variant="emerald" size="sm" onClick={handleUseModel} icon={<span>⚡</span>}>
+        <Button variant="emerald" size="sm" onClick={handleUseModel} icon={<Zap className="w-3.5 h-3.5" />}>
           Use Recommended Model
         </Button>
       </div>

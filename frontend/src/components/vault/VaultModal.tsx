@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { KeyRound, Zap, Brain, Box } from 'lucide-react';
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
 import { Badge } from '../common/Badge';
@@ -60,22 +61,13 @@ export function VaultModal({ isOpen, onClose }: VaultModalProps) {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleRemoveProvider = async (providerId: string) => {
     try {
-      await vaultService.deleteProvider(id);
-      showToast('info', 'Credential Revoked', 'Provider removed from vault.');
+      await vaultService.deleteProvider(providerId);
+      showToast('info', 'Key Removed', 'Provider credential removed from vault.');
       loadVaultProviders();
     } catch {
-      showToast('error', 'Revoke Failed', 'Could not delete credential.');
-    }
-  };
-
-  const handleTest = async (id: string) => {
-    try {
-      const res = await vaultService.testProvider(id);
-      showToast('success', 'Connection Validated', `Handshake successful. Latency: ${res.latency_ms}ms`);
-    } catch {
-      showToast('error', 'Test Failed', 'Provider unreachable.');
+      showToast('error', 'Delete Failed', 'Could not remove vault credential.');
     }
   };
 
@@ -83,17 +75,26 @@ export function VaultModal({ isOpen, onClose }: VaultModalProps) {
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="Enterprise AI Provider Vault"
-      description="Store, encrypt, and manage Bring Your Own Key (BYOK) credentials for Multi-LLM generation"
-      maxWidth="lg"
+      title="Enterprise AI Vault (BYOK Key Storage)"
+      description="Secure Fernet AES-256 encrypted API key store. Credentials never leave server memory unencrypted."
+      maxWidth="md"
     >
       <div className="space-y-6">
-        {/* Form to Add New Key */}
+        {/* Add Provider Key Form */}
         <form onSubmit={handleAddProvider} className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-4 font-mono text-xs">
-          <h4 className="font-bold text-white tracking-tight text-xs">Add New AI Model Credential</h4>
+          <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+            <span className="font-bold text-white text-xs flex items-center gap-2">
+              <KeyRound className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Connect AI Provider Key</span>
+            </span>
+            <Badge variant="indigo" size="sm">
+              AES-256 Encrypted
+            </Badge>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-[10px] text-slate-400 mb-1">Provider Type</label>
+              <label className="block text-[10px] text-slate-400 mb-1">Provider Engine</label>
               <select
                 value={selectedProvider}
                 onChange={(e) => {
@@ -101,25 +102,21 @@ export function VaultModal({ isOpen, onClose }: VaultModalProps) {
                   if (e.target.value === 'OPENAI') setModelName('gpt-4o');
                   else if (e.target.value === 'ANTHROPIC') setModelName('claude-3-5-sonnet');
                   else if (e.target.value === 'OPENROUTER') setModelName('meta-llama/llama-3.1-70b');
-                  else if (e.target.value === 'OLLAMA') {
-                    setModelName('llama3:8b');
-                    setBaseUrl('http://localhost:11434');
-                  }
+                  else if (e.target.value === 'OLLAMA') setModelName('llama3:8b');
                 }}
                 className="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200 focus:outline-none"
               >
-                <option value="OPENAI">OpenAI (BYOK)</option>
-                <option value="ANTHROPIC">Anthropic (Claude)</option>
-                <option value="OPENROUTER">OpenRouter Unified</option>
-                <option value="OLLAMA">Ollama (Local Model)</option>
+                <option value="OPENAI">OpenAI</option>
+                <option value="ANTHROPIC">Anthropic</option>
+                <option value="OPENROUTER">OpenRouter</option>
+                <option value="OLLAMA">Ollama (Local)</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-[10px] text-slate-400 mb-1">Target Model Name</label>
+              <label className="block text-[10px] text-slate-400 mb-1">Model Name</label>
               <input
                 type="text"
-                required
                 value={modelName}
                 onChange={(e) => setModelName(e.target.value)}
                 className="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200 focus:outline-none"
@@ -152,8 +149,8 @@ export function VaultModal({ isOpen, onClose }: VaultModalProps) {
           )}
 
           <div className="flex justify-end pt-1">
-            <Button variant="emerald" size="sm" type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Encrypting & Saving...' : '🔑 Store in Vault'}
+            <Button variant="emerald" size="sm" type="submit" disabled={isSubmitting} icon={<KeyRound className="w-3.5 h-3.5" />}>
+              {isSubmitting ? 'Encrypting & Saving...' : 'Store in Vault'}
             </Button>
           </div>
         </form>
@@ -166,7 +163,7 @@ export function VaultModal({ isOpen, onClose }: VaultModalProps) {
             <div className="py-6 text-center text-xs text-slate-500 font-mono">Loading Vault...</div>
           ) : providers.length === 0 ? (
             <div className="p-4 bg-slate-950 border border-slate-800/60 rounded-xl text-center text-xs text-slate-400 font-mono">
-              No custom API keys stored yet. Mock provider active by default.
+              No custom API keys stored yet.
             </div>
           ) : (
             <div className="space-y-2">
@@ -176,25 +173,31 @@ export function VaultModal({ isOpen, onClose }: VaultModalProps) {
                   className="p-3 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-between font-mono text-xs"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-base">{p.provider_name === 'OPENAI' ? '⚡' : p.provider_name === 'ANTHROPIC' ? '🧠' : '🦙'}</span>
+                    {p.provider_name === 'OPENAI' ? (
+                      <Zap className="w-4 h-4 text-indigo-400" />
+                    ) : p.provider_name === 'ANTHROPIC' ? (
+                      <Brain className="w-4 h-4 text-emerald-400" />
+                    ) : (
+                      <Box className="w-4 h-4 text-cyan-400" />
+                    )}
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-white">{p.provider_name}</span>
-                        <span className="text-[10px] text-slate-400">({p.model_name})</span>
+                        <span className="text-slate-400">({p.model_name})</span>
                         {p.is_default && <Badge variant="emerald" size="sm">Default</Badge>}
                       </div>
-                      <span className="text-[10px] text-slate-500">{p.masked_api_key}</span>
+                      <span className="text-[10px] text-slate-500 font-mono">{p.masked_api_key}</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" onClick={() => handleTest(p.id)}>
-                      Ping Test
-                    </Button>
-                    <Button variant="danger" size="sm" onClick={() => handleDelete(p.id)}>
-                      Revoke
-                    </Button>
-                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleRemoveProvider(p.id)}
+                    className="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10"
+                  >
+                    Remove
+                  </Button>
                 </div>
               ))}
             </div>

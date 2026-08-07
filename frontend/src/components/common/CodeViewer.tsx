@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Copy, Check } from 'lucide-react';
 import { useToast } from '../../hooks/useToast';
 
 export interface CodeViewerProps {
@@ -76,7 +77,8 @@ export function CodeViewer({ content, language = 'markdown', showLineNumbers = t
           onClick={handleCopy}
           className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] transition-colors flex items-center gap-1.5"
         >
-          {copied ? '✓ Copied' : '📋 Copy Code'}
+          {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+          {copied ? 'Copied' : 'Copy Code'}
         </button>
       </div>
 

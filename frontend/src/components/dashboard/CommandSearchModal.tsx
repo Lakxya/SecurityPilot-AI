@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Plus, Package, Save, Bot, Folder, ShieldAlert, Building2, Settings } from 'lucide-react';
 import { Dialog } from '../ui/Dialog';
 
 export interface CommandSearchModalProps {
@@ -10,16 +11,16 @@ export function CommandSearchModal({ isOpen, onClose }: CommandSearchModalProps)
   const [query, setQuery] = useState('');
 
   const commands = [
-    { title: 'Create Security Project', desc: 'Open 3-step project wizard', icon: '➕', category: 'Action', shortcut: '⌘N' },
-    { title: 'Export Package Archive', desc: 'Compile ZIP, Markdown, PDF or JSON', icon: '📦', category: 'Export', shortcut: '⌘⇧E' },
-    { title: 'Save Active Security Document', desc: 'Persist current artifact to database', icon: '💾', category: 'Workspace', shortcut: '⌘S' },
-    { title: 'Toggle AI Copilot Assistant', desc: 'Context-aware security assistant', icon: '🤖', category: 'AI', shortcut: '⌘I' },
-    { title: 'E-Commerce Cloud Microservices', desc: 'Open project workspace', icon: '📁', category: 'Projects', shortcut: '' },
-    { title: 'Healthcare Patient Portal Spec', desc: 'Open project workspace', icon: '📁', category: 'Projects', shortcut: '' },
-    { title: 'FinTech Banking Auth Engine', desc: 'Open project workspace', icon: '📁', category: 'Projects', shortcut: '' },
-    { title: 'STRIDE Threat Model Engine', desc: 'Inspect threat vectors', icon: '🛡️', category: 'Tools', shortcut: '' },
-    { title: 'Terraform IaC Generator', desc: 'Inspect IaC blueprints', icon: '🏗️', category: 'Tools', shortcut: '' },
-    { title: 'User Profile & API Keys', desc: 'Manage account security', icon: '⚙️', category: 'Settings', shortcut: '' },
+    { title: 'Create Security Project', desc: 'Open 3-step project wizard', icon: <Plus className="w-4 h-4 text-indigo-400" />, category: 'Action', shortcut: '⌘N' },
+    { title: 'Export Package Archive', desc: 'Compile ZIP, Markdown, PDF or JSON', icon: <Package className="w-4 h-4 text-emerald-400" />, category: 'Export', shortcut: '⌘⇧E' },
+    { title: 'Save Active Security Document', desc: 'Persist current artifact to database', icon: <Save className="w-4 h-4 text-cyan-400" />, category: 'Workspace', shortcut: '⌘S' },
+    { title: 'Toggle AI Copilot Assistant', desc: 'Context-aware security assistant', icon: <Bot className="w-4 h-4 text-purple-400" />, category: 'AI', shortcut: '⌘I' },
+    { title: 'E-Commerce Cloud Microservices', desc: 'Open project workspace', icon: <Folder className="w-4 h-4 text-slate-400" />, category: 'Projects', shortcut: '' },
+    { title: 'Healthcare Patient Portal Spec', desc: 'Open project workspace', icon: <Folder className="w-4 h-4 text-slate-400" />, category: 'Projects', shortcut: '' },
+    { title: 'FinTech Banking Auth Engine', desc: 'Open project workspace', icon: <Folder className="w-4 h-4 text-slate-400" />, category: 'Projects', shortcut: '' },
+    { title: 'STRIDE Threat Model Engine', desc: 'Inspect threat vectors', icon: <ShieldAlert className="w-4 h-4 text-rose-400" />, category: 'Tools', shortcut: '' },
+    { title: 'Terraform IaC Generator', desc: 'Inspect IaC blueprints', icon: <Building2 className="w-4 h-4 text-amber-400" />, category: 'Tools', shortcut: '' },
+    { title: 'User Profile & API Keys', desc: 'Manage account security', icon: <Settings className="w-4 h-4 text-slate-400" />, category: 'Settings', shortcut: '' },
   ];
 
   const filtered = commands.filter(
@@ -38,28 +39,25 @@ export function CommandSearchModal({ isOpen, onClose }: CommandSearchModalProps)
           </svg>
           <input
             type="text"
-            autoFocus
-            placeholder="Type a command or search projects... (⌘K)"
+            placeholder="Search commands, projects, actions... [⌘K]"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full bg-transparent text-sm text-white placeholder-slate-500 focus:outline-none"
+            className="w-full bg-transparent text-sm text-white placeholder-slate-500 focus:outline-none font-mono"
+            autoFocus
           />
-          <kbd className="bg-slate-950 border border-slate-800 px-2 py-0.5 rounded text-[10px] text-slate-400 font-mono">
-            ESC
-          </kbd>
         </div>
 
-        {/* Command Search Results List */}
-        <div className="max-h-80 overflow-y-auto p-2 space-y-1">
+        {/* Command Results List */}
+        <div className="max-h-80 overflow-y-auto p-2 space-y-1 font-mono">
           {filtered.length > 0 ? (
             filtered.map((cmd) => (
               <button
                 key={cmd.title}
                 onClick={onClose}
-                className="w-full p-3 rounded-lg hover:bg-slate-800/60 flex items-center justify-between transition-colors text-left group"
+                className="w-full p-2.5 rounded-lg flex items-center justify-between hover:bg-slate-900 transition-colors text-left group cursor-pointer"
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-lg">{cmd.icon}</span>
+                  <span className="shrink-0">{cmd.icon}</span>
                   <div>
                     <p className="text-xs font-semibold text-white group-hover:text-indigo-400 transition-colors">
                       {cmd.title}

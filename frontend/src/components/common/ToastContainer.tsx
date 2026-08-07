@@ -1,3 +1,4 @@
+import { CheckCircle2, AlertTriangle, Info, X } from 'lucide-react';
 import { ToastMessage } from '../../context/ToastContext';
 
 export interface ToastContainerProps {
@@ -18,7 +19,14 @@ export function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
             ? 'border-rose-500/50 bg-rose-950/90 text-rose-100 shadow-rose-900/20'
             : 'border-indigo-500/50 bg-indigo-950/90 text-indigo-100 shadow-indigo-900/20';
 
-        const icon = toast.type === 'success' ? '✓' : toast.type === 'error' ? '⚠️' : 'ℹ️';
+        const icon =
+          toast.type === 'success' ? (
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+          ) : toast.type === 'error' ? (
+            <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+          ) : (
+            <Info className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+          );
 
         return (
           <div
@@ -26,7 +34,7 @@ export function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
             className={`pointer-events-auto p-3.5 rounded-xl border backdrop-blur-md shadow-2xl flex items-start justify-between gap-3 animate-in fade-in slide-in-from-bottom-4 transition-all ${borderVariant}`}
           >
             <div className="flex items-start gap-2.5">
-              <span className="text-base font-bold shrink-0">{icon}</span>
+              {icon}
               <div className="space-y-0.5">
                 <h4 className="text-xs font-bold leading-tight">{toast.title}</h4>
                 {toast.description && (
@@ -37,9 +45,9 @@ export function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
 
             <button
               onClick={() => onRemove(toast.id)}
-              className="text-xs opacity-60 hover:opacity-100 transition-opacity p-0.5"
+              className="text-xs opacity-60 hover:opacity-100 transition-opacity p-0.5 cursor-pointer"
             >
-              ✕
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
         );

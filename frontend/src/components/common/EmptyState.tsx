@@ -1,7 +1,9 @@
+import React from 'react';
+import { ShieldCheck, Zap } from 'lucide-react';
 import { Button } from '../ui/Button';
 
 export interface EmptyStateProps {
-  icon?: string;
+  icon?: React.ReactNode;
   title: string;
   description: string;
   actionLabel?: string;
@@ -10,7 +12,7 @@ export interface EmptyStateProps {
 }
 
 export function EmptyState({
-  icon = '🛡️',
+  icon = <ShieldCheck className="w-7 h-7 text-indigo-400" />,
   title,
   description,
   actionLabel,
@@ -32,7 +34,7 @@ export function EmptyState({
 
       {actionLabel && onAction && (
         <div className="pt-2">
-          <Button variant="emerald" size="sm" onClick={onAction} icon={<span>⚡</span>}>
+          <Button variant="emerald" size="sm" onClick={onAction} icon={<Zap className="w-3.5 h-3.5" />}>
             {actionLabel}
           </Button>
         </div>

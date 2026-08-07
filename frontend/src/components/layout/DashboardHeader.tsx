@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { KeyRound } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { Badge } from '../common/Badge';
 import { Button } from '../ui/Button';
@@ -43,7 +44,7 @@ export function DashboardHeader({ onOpenCommandSearch, currentPath = 'Workspace 
         {/* Right Controls */}
         <div className="flex items-center gap-3">
           {/* AI Vault Button */}
-          <Button variant="outline" size="sm" onClick={() => setIsVaultOpen(true)} icon={<span>🔑</span>}>
+          <Button variant="outline" size="sm" onClick={() => setIsVaultOpen(true)} icon={<KeyRound className="w-3.5 h-3.5" />}>
             AI Vault
           </Button>
 

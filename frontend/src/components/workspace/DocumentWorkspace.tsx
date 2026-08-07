@@ -1,4 +1,24 @@
 import { useState, useEffect, useCallback } from 'react';
+import {
+  Bot,
+  GitCompare,
+  Package,
+  Zap,
+  Save,
+  FileText,
+  ShieldCheck,
+  History,
+  ClipboardList,
+  Ruler,
+  Building2,
+  Database,
+  Plug,
+  Scale,
+  Container,
+  Boxes,
+  Check,
+  X,
+} from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Badge } from '../common/Badge';
 import { Dialog } from '../ui/Dialog';
@@ -21,12 +41,10 @@ const getLanguageForTab = (tab: string): string => {
     case 'DOCKER_COMPOSE':
     case 'KUBERNETES':
     case 'GITHUB_ACTIONS':
+    case 'API_SPEC':
       return 'yaml';
     case 'TERRAFORM':
       return 'hcl';
-    case 'DATABASE_DESIGN':
-    case 'API_SPEC':
-      return 'json';
     default:
       return 'markdown';
   }
@@ -85,34 +103,34 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
     {
       name: 'Requirements & Specs',
       items: [
-        { id: 'README', label: 'README.md', icon: '📄' },
-        { id: 'SRS', label: 'SRS.md', icon: '📋' },
-        { id: 'SDS', label: 'SDS.md', icon: '📐' },
+        { id: 'README', label: 'README.md', icon: <FileText className="w-3.5 h-3.5 text-indigo-400" /> },
+        { id: 'SRS', label: 'SRS.md', icon: <ClipboardList className="w-3.5 h-3.5 text-emerald-400" /> },
+        { id: 'SDS', label: 'SDS.md', icon: <Ruler className="w-3.5 h-3.5 text-cyan-400" /> },
       ],
     },
     {
       name: 'Architecture & Data',
       items: [
-        { id: 'ARCHITECTURE', label: 'Architecture.md', icon: '🏗️' },
-        { id: 'DATABASE_DESIGN', label: 'Database ER.md', icon: '🗄️' },
-        { id: 'API_SPEC', label: 'OpenAPI Spec.yaml', icon: '🔌' },
+        { id: 'ARCHITECTURE', label: 'Architecture.md', icon: <Building2 className="w-3.5 h-3.5 text-purple-400" /> },
+        { id: 'DATABASE_DESIGN', label: 'Database ER.md', icon: <Database className="w-3.5 h-3.5 text-amber-400" /> },
+        { id: 'API_SPEC', label: 'OpenAPI Spec.yaml', icon: <Plug className="w-3.5 h-3.5 text-sky-400" /> },
       ],
     },
     {
       name: 'Security & Compliance',
       items: [
-        { id: 'THREAT_MODEL', label: 'STRIDE Model.md', icon: '🛡️' },
-        { id: 'OWASP_REVIEW', label: 'OWASP Top 10.md', icon: '⚖️' },
+        { id: 'THREAT_MODEL', label: 'STRIDE Model.md', icon: <ShieldCheck className="w-3.5 h-3.5 text-rose-400" /> },
+        { id: 'OWASP_REVIEW', label: 'OWASP Top 10.md', icon: <Scale className="w-3.5 h-3.5 text-indigo-400" /> },
       ],
     },
     {
       name: 'DevOps & Infrastructure',
       items: [
-        { id: 'DOCKERFILE', label: 'Dockerfile', icon: '🐳' },
-        { id: 'DOCKER_COMPOSE', label: 'docker-compose.yml', icon: '📦' },
-        { id: 'KUBERNETES', label: 'deployment.yaml', icon: '☸️' },
-        { id: 'TERRAFORM', label: 'main.tf', icon: '🏛️' },
-        { id: 'GITHUB_ACTIONS', label: 'ci.yml', icon: '⚡' },
+        { id: 'DOCKERFILE', label: 'Dockerfile', icon: <Container className="w-3.5 h-3.5 text-blue-400" /> },
+        { id: 'DOCKER_COMPOSE', label: 'docker-compose.yml', icon: <Package className="w-3.5 h-3.5 text-indigo-400" /> },
+        { id: 'KUBERNETES', label: 'deployment.yaml', icon: <Boxes className="w-3.5 h-3.5 text-cyan-400" /> },
+        { id: 'TERRAFORM', label: 'main.tf', icon: <Building2 className="w-3.5 h-3.5 text-amber-400" /> },
+        { id: 'GITHUB_ACTIONS', label: 'ci.yml', icon: <Zap className="w-3.5 h-3.5 text-emerald-400" /> },
       ],
     },
   ];
@@ -139,7 +157,7 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
       const vers = await generationService.fetchDocumentVersions(projectId, docType);
       setVersions(vers);
     } catch {
-      setDocumentContent(`> Document \`${docType}\` is not yet generated for **${projectName}**.\n\nClick **"⚡ Generate with AI"** above to stream security artifact generation.`);
+      setDocumentContent(`> Document \`${docType}\` is not yet generated for **${projectName}**.\n\nClick **"Generate with AI"** above to stream security artifact generation.`);
       setVersions([]);
     }
     setCompareVersion(null);
@@ -295,7 +313,10 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
 
           <div className="flex items-center gap-3">
             {saveSuccess && (
-              <span className="text-xs text-emerald-400 font-mono animate-pulse">✓ Saved to DB</span>
+              <span className="text-xs text-emerald-400 font-mono animate-pulse flex items-center gap-1">
+                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Saved to DB</span>
+              </span>
             )}
 
             {/* Version History Drawer Trigger */}
@@ -303,8 +324,9 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
               variant="ghost"
               size="sm"
               onClick={() => setIsVersionPanelOpen(!isVersionPanelOpen)}
+              icon={<History className="w-3.5 h-3.5" />}
             >
-              📜 History ({versions.length})
+              History ({versions.length})
             </Button>
 
             {/* Diff View Toggle */}
@@ -313,8 +335,9 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
                 variant={isDiffMode ? 'emerald' : 'ghost'}
                 size="sm"
                 onClick={() => setIsDiffMode(!isDiffMode)}
+                icon={<GitCompare className="w-3.5 h-3.5" />}
               >
-                {isDiffMode ? 'Exit Diff Mode' : '🔍 Compare Versions'}
+                {isDiffMode ? 'Exit Diff Mode' : 'Compare Versions'}
               </Button>
             )}
 
@@ -324,12 +347,13 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
               size="sm"
               onClick={() => setIsEditing(!isEditing)}
               disabled={isStreaming}
+              icon={<FileText className="w-3.5 h-3.5" />}
             >
-              {isEditing ? 'Preview Mode' : '✏️ Edit'}
+              {isEditing ? 'Preview Mode' : 'Edit'}
             </Button>
 
             {isEditing && (
-              <Button variant="emerald" size="sm" onClick={handleSave} disabled={isSaving}>
+              <Button variant="emerald" size="sm" onClick={handleSave} disabled={isSaving} icon={<Save className="w-3.5 h-3.5" />}>
                 {isSaving ? 'Saving...' : 'Save Edits [⌘S]'}
               </Button>
             )}
@@ -339,7 +363,7 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
               variant="outline"
               size="sm"
               onClick={() => setIsProviderPanelOpen(true)}
-              icon={<span>🤖</span>}
+              icon={<Bot className="w-3.5 h-3.5" />}
             >
               AI Matrix
             </Button>
@@ -349,7 +373,7 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
               variant="outline"
               size="sm"
               onClick={() => setIsCompareModeOpen(true)}
-              icon={<span>⚔️</span>}
+              icon={<GitCompare className="w-3.5 h-3.5" />}
             >
               Compare
             </Button>
@@ -359,7 +383,7 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
               variant="outline"
               size="sm"
               onClick={() => setIsExportModalOpen(true)}
-              icon={<span>📦</span>}
+              icon={<Package className="w-3.5 h-3.5" />}
             >
               Export [⌘⇧E]
             </Button>
@@ -370,7 +394,7 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
               size="sm"
               onClick={() => setIsRegenModalOpen(true)}
               disabled={isStreaming}
-              icon={<span>⚡</span>}
+              icon={<Zap className="w-3.5 h-3.5" />}
             >
               Regenerate
             </Button>
@@ -411,10 +435,10 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
             <div className="max-w-5xl mx-auto min-h-[550px] flex flex-col">
               {documentContent.includes('is not yet generated') ? (
                 <EmptyState
-                  icon="🛡️"
+                  icon={<ShieldCheck className="w-7 h-7 text-indigo-400" />}
                   title={`Artifact ${activeTab} Not Generated`}
                   description={`The ${activeTab} security specification is not yet compiled for ${projectName}.`}
-                  actionLabel="⚡ Generate with AI"
+                  actionLabel="Generate with AI"
                   onAction={() => handleGenerate()}
                   className="my-auto"
                 />
@@ -459,9 +483,9 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
             <h3 className="text-xs font-bold text-white font-mono">Version Snapshot History</h3>
             <button
               onClick={() => setIsVersionPanelOpen(false)}
-              className="text-slate-400 hover:text-white text-xs"
+              className="text-slate-400 hover:text-white text-xs cursor-pointer"
             >
-              ✕
+              <X className="w-4 h-4" />
             </button>
           </div>
 
@@ -533,7 +557,7 @@ export function DocumentWorkspace({ projectId, projectName, onBackToDashboard }:
               variant="emerald"
               size="sm"
               onClick={() => handleGenerate(customInstructions)}
-              icon={<span>⚡</span>}
+              icon={<Zap className="w-3.5 h-3.5" />}
             >
               Regenerate Document
             </Button>

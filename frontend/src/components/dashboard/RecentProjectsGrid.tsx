@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Search } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/Card';
 import { Badge } from '../common/Badge';
 import { Button } from '../ui/Button';
@@ -128,7 +129,7 @@ export function RecentProjectsGrid({ onNewProjectClick, onOpenWorkspace }: Recen
         </div>
       ) : filteredProjects.length === 0 ? (
         <EmptyState
-          icon="🔎"
+          icon={<Search className="w-7 h-7 text-indigo-400" />}
           title="No Security Workspaces Found"
           description={`No project workspaces match your search term "${searchTerm}".`}
           actionLabel="Clear Search Filter"

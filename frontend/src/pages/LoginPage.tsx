@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { ShieldCheck, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/ui/Button';
 import { SecurityMesh3D } from '../components/common/SecurityMesh3D';
@@ -38,7 +39,7 @@ export function LoginPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center space-y-2 relative z-10">
         <Link to="/" className="inline-flex items-center gap-2.5 group">
           <div className="w-10 h-10 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-bold text-xl group-hover:bg-indigo-600/30 transition-all">
-            🛡️
+            <ShieldCheck className="w-6 h-6 text-indigo-400" />
           </div>
           <span className="font-bold text-2xl text-white tracking-tight">
             SecurityPilot<span className="text-indigo-400">AI</span>
@@ -54,7 +55,7 @@ export function LoginPage() {
         <div className="bg-slate-900/80 border border-slate-800 backdrop-blur-md py-8 px-4 shadow-2xl rounded-xl sm:px-10">
           {error && (
             <div className="mb-6 bg-rose-500/10 border border-rose-500/20 text-rose-400 p-3.5 rounded-lg text-xs flex items-center gap-2">
-              <span>⚠️</span>
+              <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
               <span>{error}</span>
             </div>
           )}
