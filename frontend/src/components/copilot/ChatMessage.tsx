@@ -3,6 +3,7 @@ import { User, ShieldCheck, ArrowRight, Wrench, HelpCircle } from 'lucide-react'
 import { ChatMessageItem } from '../../services/chatService';
 import { Badge } from '../common/Badge';
 import { FileChip } from '../common/FileChip';
+import { classifyUserIntent, isReportIntent } from '../../utils/intentClassifier';
 
 export interface ChatMessageProps {
   message: ChatMessageItem;
@@ -13,9 +14,23 @@ export function ChatMessage({ message, onOpenReportModal }: ChatMessageProps) {
   const [isApplyingFix, setIsApplyingFix] = useState(false);
   const isUser = message.role === 'user';
 
+  const intent = classifyUserIntent(message.content);
+  const showReportUI = !isUser && isReportIntent(intent);
+
   const handleApplyFix = () => {
     setIsApplyingFix(true);
     setTimeout(() => setIsApplyingFix(false), 1500);
+  };
+
+  // Conversational response fallback for greeting/casual intents
+  const renderMessageContent = () => {
+    if (intent === 'GREETING' && !isUser) {
+      return "Hello! I'm SecurityPilot Copilot. How can I assist with your software architecture, threat modeling, or security audit today?";
+    }
+    if (intent === 'CASUAL_CONVERSATION' && !isUser) {
+      return "I'm doing great, thank you! I'm fully initialized and ready to inspect your architecture blueprints and security specs.";
+    }
+    return message.content;
   };
 
   return (
@@ -48,12 +63,25 @@ export function ChatMessage({ message, onOpenReportModal }: ChatMessageProps) {
 
         {!isUser && (
           <div className="flex items-center gap-2 font-mono text-[10px]">
-            <Badge variant="emerald" size="sm">
-              98% Verified
+            {/* Debugging Intent Badge */}
+            <Badge variant="slate" size="sm">
+              Intent: {intent}
             </Badge>
-            <span className="text-emerald-400 font-bold bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
-              95 / 100
-            </span>
+
+            {showReportUI ? (
+              <>
+                <Badge variant="emerald" size="sm">
+                  98% Verified
+                </Badge>
+                <span className="text-emerald-400 font-bold bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
+                  95 / 100
+                </span>
+              </>
+            ) : (
+              <Badge variant="emerald" size="sm">
+                Ready
+              </Badge>
+            )}
           </div>
         )}
       </div>
@@ -63,9 +91,9 @@ export function ChatMessage({ message, onOpenReportModal }: ChatMessageProps) {
         <div className="whitespace-pre-wrap font-sans text-slate-200 text-xs">
           {message.content}
         </div>
-      ) : (
+      ) : showReportUI ? (
+        /* Executive Security Report Summary UI (Only for Audit / STRIDE / OWASP / Architecture) */
         <div className="space-y-3 font-sans">
-          {/* Quick Clean Summary */}
           <div className="space-y-1">
             <p className="text-xs font-semibold text-slate-200 leading-normal">
               Architecture reviewed successfully against STRIDE and OWASP Top 10 guidelines.
@@ -79,7 +107,6 @@ export function ChatMessage({ message, onOpenReportModal }: ChatMessageProps) {
             </div>
           </div>
 
-          {/* Affected Files Chips */}
           <div className="space-y-1">
             <p className="text-[10px] font-mono text-slate-400 font-bold">Affected Files:</p>
             <div className="flex flex-wrap items-center gap-1.5">
@@ -89,7 +116,6 @@ export function ChatMessage({ message, onOpenReportModal }: ChatMessageProps) {
             </div>
           </div>
 
-          {/* Primary Recommendations */}
           <div className="space-y-1 text-[11px] text-slate-300 font-sans border-t border-slate-800/60 pt-2">
             <p className="font-mono text-[10px] text-slate-400 font-bold">Primary Recommendations:</p>
             <ul className="list-disc list-inside space-y-0.5 text-slate-300">
@@ -99,9 +125,7 @@ export function ChatMessage({ message, onOpenReportModal }: ChatMessageProps) {
             </ul>
           </div>
 
-          {/* Action Bar */}
           <div className="pt-2 border-t border-slate-800/60 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 font-mono">
-            {/* View Full Report CTA */}
             <button
               onClick={() => onOpenReportModal && onOpenReportModal(message.content)}
               className="w-full sm:w-auto px-3 py-1.5 rounded-lg bg-indigo-600/90 hover:bg-indigo-500 text-white font-bold text-[11px] transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md shadow-indigo-600/20 active:scale-95"
@@ -127,6 +151,11 @@ export function ChatMessage({ message, onOpenReportModal }: ChatMessageProps) {
               </button>
             </div>
           </div>
+        </div>
+      ) : (
+        /* Normal Markdown Chat Bubble UI (Greetings, General Questions, Programming, Casual Chat) */
+        <div className="whitespace-pre-wrap font-sans text-slate-200 text-xs leading-relaxed">
+          {renderMessageContent()}
         </div>
       )}
     </div>
