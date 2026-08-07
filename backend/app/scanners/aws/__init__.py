@@ -5,6 +5,7 @@ from app.scanners.aws.ec2 import AWSEC2Scanner
 from app.scanners.aws.cloudtrail import AWSCloudTrailScanner
 from app.scanners.aws.kms import AWSKMSScanner
 from app.scanners.aws.config import AWSConfigScanner
+from app.scanners.aws.guardduty import AWSGuardDutyScanner
 
 __all__ = [
     "AWSScanner",
@@ -14,4 +15,5 @@ __all__ = [
     "AWSCloudTrailScanner",
     "AWSKMSScanner",
     "AWSConfigScanner",
+    "AWSGuardDutyScanner",
 ]
