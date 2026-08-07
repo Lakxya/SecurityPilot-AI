@@ -49,7 +49,7 @@ export function Dialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
       {/* Backdrop Overlay */}
       <div
-        className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-slate-950/85 backdrop-blur-md transition-opacity duration-200"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -58,7 +58,7 @@ export function Dialog({
       <div
         className={twMerge(
           clsx(
-            'relative w-full bg-slate-900 border border-slate-800 rounded-xl shadow-2xl z-10 overflow-hidden text-left transition-all',
+            'relative w-full bg-slate-900 border border-slate-800/90 rounded-2xl shadow-2xl z-10 overflow-hidden text-left transition-all animate-modal-enter',
             maxWidthClasses[maxWidth],
             className
           )

@@ -45,7 +45,7 @@ export function PlaygroundPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col selection:bg-indigo-500/30">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col selection:bg-indigo-500/30 animate-page-entry">
       {/* Top Header Navigation */}
       <header className="h-16 border-b border-slate-800/80 px-6 flex items-center justify-between shrink-0 bg-slate-900/60 backdrop-blur-md">
         <div className="flex items-center gap-3 font-mono">

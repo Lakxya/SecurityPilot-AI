@@ -66,7 +66,7 @@ export function RichMarkdownViewer({ content, className = '' }: RichMarkdownView
             );
           } else if (line.trim().startsWith('|')) {
             return (
-              <div key={idx} className="bg-slate-900/40 font-mono text-[11px] text-slate-300 px-2 py-0.5 border-b border-slate-800/50">
+              <div key={idx} className="bg-slate-900/50 hover:bg-indigo-950/30 font-mono text-[11px] text-slate-300 px-3 py-1 border-b border-slate-800/60 transition-colors duration-150 rounded">
                 {line}
               </div>
             );

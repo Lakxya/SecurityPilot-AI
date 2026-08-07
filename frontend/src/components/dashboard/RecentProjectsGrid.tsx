@@ -139,16 +139,19 @@ export function RecentProjectsGrid({ onNewProjectClick, onOpenWorkspace }: Recen
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project) => (
-            <Card key={project.id} className="flex flex-col justify-between p-6">
+            <Card
+              key={project.id}
+              className="flex flex-col justify-between p-6 transition-all duration-250 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-xl hover:shadow-indigo-500/10 hover:border-indigo-500/40 group font-sans"
+            >
               <CardHeader>
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <CardTitle
                     onClick={() => onOpenWorkspace && onOpenWorkspace(project.id, project.name)}
-                    className="text-base font-bold text-white hover:text-indigo-400 transition-colors cursor-pointer"
+                    className="text-base font-bold text-white group-hover:text-indigo-300 transition-colors cursor-pointer"
                   >
                     {project.name}
                   </CardTitle>
-                  <Badge variant="emerald" size="sm">
+                  <Badge variant="emerald" size="sm" pulse>
                     {project.status}
                   </Badge>
                 </div>

@@ -11,7 +11,7 @@ export function Skeleton({ className, ...props }: SkeletonProps) {
     <div
       className={twMerge(
         clsx(
-          'animate-pulse rounded-lg bg-slate-800/60 border border-slate-700/30',
+          'skeleton-shimmer rounded-lg border border-slate-700/30 font-mono',
           className
         )
       )}

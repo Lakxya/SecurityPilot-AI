@@ -19,6 +19,7 @@ import { Footer } from '../components/layout/Footer';
 import { Button } from '../components/ui/Button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/common/Badge';
+import { CyberGridBackground } from '../components/common/CyberGridBackground';
 
 export function LandingPage() {
   const navigate = useNavigate();
@@ -129,7 +130,10 @@ export function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-indigo-500/30 selection:text-indigo-200 relative animate-page-entry">
+      {/* Ambient Animated Cyber Grid & Cursor Spotlight */}
+      <CyberGridBackground />
+
       {/* Top Navbar */}
       <Navbar />
 

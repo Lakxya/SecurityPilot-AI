@@ -53,7 +53,7 @@ export function CopilotPanel({
     return (
       <button
         onClick={() => setIsCollapsed(false)}
-        className="fixed bottom-6 right-6 z-50 bg-indigo-600 hover:bg-indigo-500 text-white p-3.5 rounded-full shadow-2xl flex items-center gap-2 border border-indigo-400/40 transition-all font-mono text-xs cursor-pointer"
+        className="fixed bottom-6 right-6 z-50 bg-indigo-600/90 hover:bg-indigo-500 text-white p-3.5 rounded-full shadow-2xl shadow-indigo-600/30 flex items-center gap-2 border border-indigo-400/40 backdrop-blur-md transition-all duration-200 cubic-bezier(0.16,1,0.3,1) hover:-translate-y-1 hover:scale-105 active:scale-95 font-mono text-xs cursor-pointer"
       >
         <ShieldCheck className="w-4 h-4 text-white" />
         <span className="font-bold">Security Copilot</span>
@@ -62,7 +62,7 @@ export function CopilotPanel({
   }
 
   return (
-    <aside className="w-80 sm:w-96 bg-slate-950 border-l border-slate-800 flex flex-col h-full shrink-0 relative z-30">
+    <aside className="w-80 sm:w-96 bg-slate-950/90 border-l border-slate-800/80 backdrop-blur-xl flex flex-col h-full shrink-0 relative z-30 shadow-2xl">
       {/* Header Bar */}
       <header className="h-14 px-4 border-b border-slate-800 flex items-center justify-between shrink-0 bg-slate-950">
         <div className="flex items-center gap-2">

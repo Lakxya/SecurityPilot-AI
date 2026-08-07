@@ -10,6 +10,7 @@ import { CommandSearchModal } from '../components/dashboard/CommandSearchModal';
 import { DocumentWorkspace } from '../components/workspace/DocumentWorkspace';
 import { Badge } from '../components/common/Badge';
 import { CyberShield3D } from '../components/common/CyberShield3D';
+import { CyberGridBackground } from '../components/common/CyberGridBackground';
 
 export function DashboardPage() {
   const { user } = useAuth();
@@ -50,7 +51,10 @@ export function DashboardPage() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-950 text-slate-100 font-sans selection:bg-indigo-500/30">
+    <div className="flex h-screen overflow-hidden bg-slate-950 text-slate-100 font-sans selection:bg-indigo-500/30 animate-page-entry relative">
+      {/* Ambient Animated Cyber Grid & Cursor Spotlight */}
+      <CyberGridBackground />
+
       {/* Collapsible Left Sidebar */}
       <DashboardSidebar
         activeTab={activeTab}

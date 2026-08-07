@@ -83,7 +83,7 @@ export function DashboardSidebar({ activeTab, onTabChange, onNewProjectClick }: 
         </div>
 
         {/* Navigation Menu */}
-        <nav className="px-2 space-y-1">
+        <nav className="px-2 space-y-1 font-mono">
           {navItems.map((item) => {
             const isActive = activeTab === item.id;
             return (
@@ -96,19 +96,19 @@ export function DashboardSidebar({ activeTab, onTabChange, onNewProjectClick }: 
                     onTabChange(item.id);
                   }
                 }}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                className={`group w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-all duration-200 cubic-bezier(0.16,1,0.3,1) cursor-pointer ${
                   isActive
-                    ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-900'
+                    ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/40 shadow-lg shadow-indigo-500/10 font-bold'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-900/80 hover:border-slate-800 border border-transparent'
                 }`}
                 title={collapsed ? item.label : undefined}
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-base shrink-0">{item.icon}</span>
+                  <span className="shrink-0 group-hover:scale-110 transition-transform duration-200 text-indigo-400">{item.icon}</span>
                   {!collapsed && <span className="truncate">{item.label}</span>}
                 </div>
                 {!collapsed && item.count && (
-                  <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-900 text-slate-400 border border-slate-800">
+                  <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-900 text-slate-400 border border-slate-800 group-hover:border-indigo-500/30">
                     {item.count}
                   </span>
                 )}
