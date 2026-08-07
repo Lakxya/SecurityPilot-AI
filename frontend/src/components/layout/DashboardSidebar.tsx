@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Badge } from '../common/Badge';
 
 export interface DashboardSidebarProps {
@@ -8,11 +9,13 @@ export interface DashboardSidebarProps {
 }
 
 export function DashboardSidebar({ activeTab, onTabChange, onNewProjectClick }: DashboardSidebarProps) {
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: '📊' },
     { id: 'projects', label: 'Projects', icon: '📁', count: '3' },
+    { id: 'playground', label: 'AI Playground', icon: '🧪' },
     { id: 'threats', label: 'Threat Engine', icon: '🛡️' },
     { id: 'iac', label: 'IaC Modules', icon: '☸️' },
     { id: 'history', label: 'Audit History', icon: '📜' },
@@ -75,7 +78,13 @@ export function DashboardSidebar({ activeTab, onTabChange, onNewProjectClick }: 
             return (
               <button
                 key={item.id}
-                onClick={() => onTabChange(item.id)}
+                onClick={() => {
+                  if (item.id === 'playground') {
+                    navigate('/playground');
+                  } else {
+                    onTabChange(item.id);
+                  }
+                }}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all ${
                   isActive
                     ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30'

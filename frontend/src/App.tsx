@@ -6,6 +6,7 @@ import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { PlaygroundPage } from './pages/PlaygroundPage';
 
 function App() {
   return (
@@ -21,6 +22,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/playground"
+              element={
+                <ProtectedRoute>
+                  <PlaygroundPage />
                 </ProtectedRoute>
               }
             />
