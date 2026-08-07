@@ -29,11 +29,11 @@ class AWSIAMScanner(BaseScanner):
         self.session = session
 
     def _get_iam_client(self):
+        if self.session:
+            return self.session.client("iam")
         if not BOTO3_AVAILABLE:
             return None
         try:
-            if self.session:
-                return self.session.client("iam")
             return boto3.client("iam")
         except Exception as e:
             logger.warning(f"Unable to initialize boto3 IAM client: {e}")
