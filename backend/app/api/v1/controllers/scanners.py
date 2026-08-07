@@ -10,6 +10,8 @@ import app.scanners  # ensures init_scanners() runs
 router = APIRouter(tags=["Security Scanners"])
 
 class ScanRequest(BaseModel):
+    provider: Optional[str] = None
+    service: Optional[str] = None
     providers: Optional[List[str]] = None
     scanner_keys: Optional[List[str]] = None
 
@@ -34,11 +36,23 @@ async def run_scanners(request: ScanRequest = ScanRequest()):
     """Execute selected security scanners or all scanners across cloud providers."""
     scanners_to_run = []
 
+    # Direct key lookup
     if request.scanner_keys:
         for key in request.scanner_keys:
             scanner = scanner_registry.get(key)
             if scanner:
                 scanners_to_run.append(scanner)
+    # Direct single provider & service lookup (e.g. provider="aws", service="iam")
+    elif request.provider and request.service:
+        key = f"{request.provider.lower()}_{request.service.lower()}"
+        scanner = scanner_registry.get(key)
+        if scanner:
+            scanners_to_run.append(scanner)
+        else:
+            # Fallback to provider lookup
+            scanners_to_run.extend(scanner_registry.get_by_provider(request.provider))
+    elif request.provider:
+        scanners_to_run.extend(scanner_registry.get_by_provider(request.provider))
     elif request.providers:
         for p in request.providers:
             scanners_to_run.extend(scanner_registry.get_by_provider(p))
