@@ -3,6 +3,7 @@ import { ShieldCheck, Bot, Trash2, X, ArrowDown } from 'lucide-react';
 import { useChat } from '../../hooks/useChat';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
+import { ExecutiveReportModal } from './ExecutiveReportModal';
 import { Badge } from '../common/Badge';
 
 export interface CopilotPanelProps {
@@ -19,6 +20,8 @@ export function CopilotPanel({
   currentDocContent,
 }: CopilotPanelProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [reportModalContent, setReportModalContent] = useState('');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
 
@@ -114,7 +117,16 @@ export function CopilotPanel({
             </p>
           </div>
         ) : (
-          messages.map((msg, idx) => <ChatMessage key={msg.id || idx} message={msg} />)
+          messages.map((msg, idx) => (
+            <ChatMessage
+              key={msg.id || idx}
+              message={msg}
+              onOpenReportModal={(content) => {
+                setReportModalContent(content);
+                setIsReportModalOpen(true);
+              }}
+            />
+          ))
         )}
 
         {/* Live Streaming Response Bubble */}
@@ -146,6 +158,14 @@ export function CopilotPanel({
 
       {/* Input Footer */}
       <ChatInput onSendMessage={sendMessage} disabled={isStreaming} />
+
+      {/* Fullscreen Executive Security Report Modal */}
+      <ExecutiveReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        content={reportModalContent}
+        projectName={projectName}
+      />
     </aside>
   );
 }

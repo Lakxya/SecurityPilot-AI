@@ -1,120 +1,134 @@
 import { useState } from 'react';
-import { User, ShieldCheck, Check, Copy, ChevronDown, ChevronUp, Cpu, Activity } from 'lucide-react';
+import { User, ShieldCheck, ArrowRight, Wrench, HelpCircle } from 'lucide-react';
 import { ChatMessageItem } from '../../services/chatService';
 import { Badge } from '../common/Badge';
+import { FileChip } from '../common/FileChip';
 
 export interface ChatMessageProps {
   message: ChatMessageItem;
+  onOpenReportModal?: (content: string) => void;
 }
 
-export function ChatMessage({ message }: ChatMessageProps) {
-  const [copied, setCopied] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+export function ChatMessage({ message, onOpenReportModal }: ChatMessageProps) {
+  const [isApplyingFix, setIsApplyingFix] = useState(false);
   const isUser = message.role === 'user';
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(message.content);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleApplyFix = () => {
+    setIsApplyingFix(true);
+    setTimeout(() => setIsApplyingFix(false), 1500);
   };
 
   return (
     <div
-      className={`flex gap-3 p-4 rounded-xl text-xs leading-relaxed transition-all duration-200 ${
+      className={`p-4 rounded-xl text-xs leading-relaxed transition-all duration-200 ${
         isUser
           ? 'bg-slate-900/90 border border-slate-800 text-slate-100 ml-4 shadow-md'
-          : 'bg-gradient-to-b from-indigo-950/40 to-slate-950/80 border border-indigo-500/30 text-slate-200 mr-4 shadow-xl backdrop-blur-md'
+          : 'bg-slate-900/70 border border-indigo-500/20 text-slate-200 mr-2 shadow-lg backdrop-blur-md space-y-3'
       }`}
     >
-      {/* Role Avatar Badge */}
-      <div
-        className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${
-          isUser ? 'bg-slate-800 text-slate-300' : 'bg-indigo-600/90 text-white shadow-lg shadow-indigo-500/30 border border-indigo-400/30'
-        }`}
-      >
-        {isUser ? <User className="w-4 h-4 text-slate-300" /> : <ShieldCheck className="w-4 h-4 text-white" />}
-      </div>
-
-      {/* Message Body Column */}
-      <div className="flex-1 space-y-2 overflow-hidden">
-        {/* Header Bar with Provider Metadata */}
-        <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-[11px] font-mono text-white">
-              {isUser ? 'Security Engineer' : 'SecurityPilot Copilot'}
-            </span>
-            {!isUser && (
-              <Badge variant="indigo" size="sm">
-                Claude 3.5 / GPT-4o
-              </Badge>
-            )}
+      {/* Role & Provider Header Bar */}
+      <div className="flex items-center justify-between border-b border-slate-800/60 pb-2.5">
+        <div className="flex items-center gap-2">
+          <div
+            className={`w-6 h-6 rounded-md flex items-center justify-center font-bold text-xs shrink-0 ${
+              isUser ? 'bg-slate-800 text-slate-300' : 'bg-indigo-600/90 text-white shadow-md'
+            }`}
+          >
+            {isUser ? <User className="w-3.5 h-3.5" /> : <ShieldCheck className="w-3.5 h-3.5 text-white" />}
           </div>
-
-          <div className="flex items-center gap-2 font-mono text-[10px]">
-            {!isUser && (
-              <Badge variant="emerald" size="sm">
-                98% Verified
-              </Badge>
-            )}
-
-            <button
-              onClick={handleCopy}
-              className="text-slate-400 hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
-            >
-              {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-              <span>{copied ? 'Copied' : 'Copy'}</span>
-            </button>
-          </div>
+          <span className="font-bold text-[11px] font-mono text-white">
+            {isUser ? 'Security Engineer' : 'SecurityPilot Copilot'}
+          </span>
+          {!isUser && (
+            <Badge variant="indigo" size="sm">
+              Claude 3.5 Sonnet
+            </Badge>
+          )}
         </div>
 
-        {/* Text Content */}
-        <div className="whitespace-pre-wrap font-sans text-slate-200 leading-relaxed text-xs">
-          {message.content}
-        </div>
-
-        {/* Assistant Response Metrics & Collapsible Context */}
         {!isUser && (
-          <div className="pt-2 space-y-2 border-t border-slate-800/40">
-            <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
-              <div className="flex items-center gap-3">
-                <span className="flex items-center gap-1">
-                  <Activity className="w-3 h-3 text-cyan-400" />
-                  <span>Latency: 0.38s</span>
-                </span>
-                <span className="flex items-center gap-1">
-                  <Cpu className="w-3 h-3 text-purple-400" />
-                  <span>Tokens: ~340</span>
-                </span>
-              </div>
-
-              <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="hover:text-white flex items-center gap-1 cursor-pointer transition-colors"
-              >
-                <span>{isExpanded ? 'Hide Context' : 'Context Metrics'}</span>
-                {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-              </button>
-            </div>
-
-            {isExpanded && (
-              <div className="p-2.5 rounded-lg bg-slate-950/90 border border-slate-800/80 text-[10px] font-mono text-slate-400 space-y-1 animate-in fade-in duration-150">
-                <div className="flex justify-between">
-                  <span>STRIDE Audit Rating:</span>
-                  <span className="text-emerald-400 font-bold">PASS (0 High Risks)</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>OWASP Top 10 Coverage:</span>
-                  <span className="text-indigo-300">A01, A03, A07 Inspected</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Encryption Standard:</span>
-                  <span className="text-cyan-400">TLS 1.3 / AES-256-GCM</span>
-                </div>
-              </div>
-            )}
+          <div className="flex items-center gap-2 font-mono text-[10px]">
+            <Badge variant="emerald" size="sm">
+              98% Verified
+            </Badge>
+            <span className="text-emerald-400 font-bold bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
+              95 / 100
+            </span>
           </div>
         )}
       </div>
+
+      {/* User Message vs Assistant Response Content */}
+      {isUser ? (
+        <div className="whitespace-pre-wrap font-sans text-slate-200 text-xs">
+          {message.content}
+        </div>
+      ) : (
+        <div className="space-y-3 font-sans">
+          {/* Quick Clean Summary */}
+          <div className="space-y-1">
+            <p className="text-xs font-semibold text-slate-200 leading-normal">
+              Architecture reviewed successfully against STRIDE and OWASP Top 10 guidelines.
+            </p>
+            <div className="flex items-center gap-2 font-mono text-[10px] text-slate-400 pt-1">
+              <span className="text-rose-400 font-bold">3 High</span>
+              <span>•</span>
+              <span className="text-amber-400 font-bold">2 Medium</span>
+              <span>•</span>
+              <span className="text-emerald-400 font-bold">5 Low findings</span>
+            </div>
+          </div>
+
+          {/* Affected Files Chips */}
+          <div className="space-y-1">
+            <p className="text-[10px] font-mono text-slate-400 font-bold">Affected Files:</p>
+            <div className="flex flex-wrap items-center gap-1.5">
+              <FileChip fileName="README.md" />
+              <FileChip fileName="main.tf" />
+              <FileChip fileName="Dockerfile" />
+            </div>
+          </div>
+
+          {/* Primary Recommendations */}
+          <div className="space-y-1 text-[11px] text-slate-300 font-sans border-t border-slate-800/60 pt-2">
+            <p className="font-mono text-[10px] text-slate-400 font-bold">Primary Recommendations:</p>
+            <ul className="list-disc list-inside space-y-0.5 text-slate-300">
+              <li>Enable Multi-Factor Authentication (MFA)</li>
+              <li>Harden IAM Role Least Privilege Policies</li>
+              <li>Enable AWS CloudTrail Immutable Logging</li>
+            </ul>
+          </div>
+
+          {/* Action Bar */}
+          <div className="pt-2 border-t border-slate-800/60 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 font-mono">
+            {/* View Full Report CTA */}
+            <button
+              onClick={() => onOpenReportModal && onOpenReportModal(message.content)}
+              className="w-full sm:w-auto px-3 py-1.5 rounded-lg bg-indigo-600/90 hover:bg-indigo-500 text-white font-bold text-[11px] transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md shadow-indigo-600/20 active:scale-95"
+            >
+              <span>View Full Security Report</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+
+            <div className="flex items-center justify-end gap-1.5">
+              <button
+                onClick={handleApplyFix}
+                className="px-2.5 py-1 rounded-md bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-300 hover:text-white text-[10px] transition-colors flex items-center gap-1 cursor-pointer"
+              >
+                <Wrench className="w-3 h-3 text-emerald-400" />
+                <span>{isApplyingFix ? 'Applying...' : 'Apply Fix'}</span>
+              </button>
+              <button
+                onClick={() => onOpenReportModal && onOpenReportModal(message.content)}
+                className="px-2.5 py-1 rounded-md bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-300 hover:text-white text-[10px] transition-colors flex items-center gap-1 cursor-pointer"
+              >
+                <HelpCircle className="w-3 h-3 text-indigo-400" />
+                <span>Explain</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

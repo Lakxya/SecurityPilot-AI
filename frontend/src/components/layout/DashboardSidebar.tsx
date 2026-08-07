@@ -35,7 +35,7 @@ export function DashboardSidebar({ activeTab, onTabChange, onNewProjectClick }: 
 
   return (
     <aside
-      className={`bg-slate-950 border-r border-slate-800/80 flex flex-col justify-between transition-all duration-300 shrink-0 ${
+      className={`bg-gradient-to-b from-slate-950 via-slate-900/90 to-slate-950 border-r border-indigo-500/20 backdrop-blur-2xl flex flex-col justify-between transition-all duration-300 shrink-0 shadow-2xl shadow-indigo-950/30 relative z-20 ${
         collapsed ? 'w-16' : 'w-64'
       }`}
     >
