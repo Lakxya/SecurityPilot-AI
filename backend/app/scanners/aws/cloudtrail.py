@@ -105,9 +105,26 @@ class AWSCloudTrailScanner(BaseScanner):
 
     def _describe_trails(self, client) -> List[Dict[str, Any]]:
         try:
-            return client.describe_trails(includeShadowTrails=True).get("trailList", [])
+            trails = client.describe_trails(includeShadowTrails=True).get("trailList", [])
+            if trails:
+                return trails
         except Exception:
-            return []
+            pass
+
+        try:
+            paginator = client.get_paginator("list_trails")
+            trail_arns = []
+            for page in paginator.paginate():
+                for trail_info in page.get("Trails", []):
+                    if trail_info.get("TrailARN"):
+                        trail_arns.append(trail_info["TrailARN"])
+
+            if trail_arns:
+                return client.describe_trails(trailNameList=trail_arns).get("trailList", [])
+        except Exception:
+            pass
+
+        return []
 
     def _analyze_trail(self, client, trail: Dict[str, Any]) -> List[Finding]:
         findings = []
