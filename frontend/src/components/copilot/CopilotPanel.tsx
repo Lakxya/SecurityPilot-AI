@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useChat } from '../../hooks/useChat';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
@@ -18,6 +18,8 @@ export function CopilotPanel({
   currentDocContent,
 }: CopilotPanelProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const [showJumpToLatest, setShowJumpToLatest] = useState(false);
 
   const {
     messages,
@@ -28,6 +30,23 @@ export function CopilotPanel({
     sendMessage,
     clearHistory,
   } = useChat(projectId, activeDocType, currentDocContent);
+
+  const handleScroll = () => {
+    if (!scrollAreaRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
+    const isBottom = scrollHeight - scrollTop - clientHeight < 40;
+    setShowJumpToLatest(!isBottom);
+  };
+
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messagesEndRef]);
+
+  useEffect(() => {
+    if (isStreaming && !showJumpToLatest) {
+      scrollToBottom();
+    }
+  }, [streamingText, isStreaming, showJumpToLatest, scrollToBottom]);
 
   if (isCollapsed) {
     return (
@@ -76,7 +95,11 @@ export function CopilotPanel({
       </header>
 
       {/* Messages Scroll Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-slate-950/60">
+      <div
+        ref={scrollAreaRef}
+        onScroll={handleScroll}
+        className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-slate-950/60 scroll-smooth relative"
+      >
         {isLoadingHistory ? (
           <div className="text-center py-12 text-xs font-mono text-slate-500 animate-pulse">
             Loading context history...
@@ -107,6 +130,16 @@ export function CopilotPanel({
         )}
 
         <div ref={messagesEndRef} />
+
+        {/* Floating Jump to Latest Button */}
+        {showJumpToLatest && (
+          <button
+            onClick={scrollToBottom}
+            className="sticky bottom-2 left-1/2 -translate-x-1/2 bg-indigo-600/90 hover:bg-indigo-500 text-white font-mono text-[10px] px-3 py-1 rounded-full shadow-lg border border-indigo-400/30 backdrop-blur-md transition-all animate-bounce"
+          >
+            ↓ Jump to Latest
+          </button>
+        )}
       </div>
 
       {/* Input Footer */}

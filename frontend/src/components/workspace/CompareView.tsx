@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '../ui/Button';
 import { Badge } from '../common/Badge';
 import { CodeViewer } from '../common/CodeViewer';
@@ -19,6 +19,24 @@ export function CompareView({ projectId, artifact, onClose, onSelectWinnerConten
   const [streamA, setStreamA] = useState('');
   const [streamB, setStreamB] = useState('');
   const [summary, setSummary] = useState<CompareSummary | null>(null);
+  const [isSyncScroll, setIsSyncScroll] = useState(true);
+
+  const paneARef = useRef<HTMLDivElement>(null);
+  const paneBRef = useRef<HTMLDivElement>(null);
+
+  const handleSyncScrollA = () => {
+    if (!isSyncScroll || !paneARef.current || !paneBRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = paneARef.current;
+    const ratio = scrollTop / (scrollHeight - clientHeight || 1);
+    paneBRef.current.scrollTop = ratio * (paneBRef.current.scrollHeight - paneBRef.current.clientHeight);
+  };
+
+  const handleSyncScrollB = () => {
+    if (!isSyncScroll || !paneARef.current || !paneBRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = paneBRef.current;
+    const ratio = scrollTop / (scrollHeight - clientHeight || 1);
+    paneARef.current.scrollTop = ratio * (paneARef.current.scrollHeight - paneARef.current.clientHeight);
+  };
 
   useEffect(() => {
     setIsStreaming(true);
@@ -70,6 +88,15 @@ export function CompareView({ projectId, artifact, onClose, onSelectWinnerConten
         </div>
 
         <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsSyncScroll(!isSyncScroll)}
+            icon={<span>🔗</span>}
+          >
+            Sync Scroll: {isSyncScroll ? 'ON' : 'OFF'}
+          </Button>
+
           {summary && (
             <Button variant="emerald" size="sm" onClick={handleApplyWinner} icon={<span>🏆</span>}>
               Apply Winner Output
@@ -118,7 +145,7 @@ export function CompareView({ projectId, artifact, onClose, onSelectWinnerConten
               </Badge>
             </div>
 
-            <div className="flex-1 min-h-[400px]">
+            <div ref={paneARef} onScroll={handleSyncScrollA} className="flex-1 min-h-[400px] max-h-[500px] overflow-y-auto">
               <CodeViewer content={streamA || 'Streaming tokens from OpenAI...'} language="markdown" />
             </div>
 
@@ -141,7 +168,7 @@ export function CompareView({ projectId, artifact, onClose, onSelectWinnerConten
               </Badge>
             </div>
 
-            <div className="flex-1 min-h-[400px]">
+            <div ref={paneBRef} onScroll={handleSyncScrollB} className="flex-1 min-h-[400px] max-h-[500px] overflow-y-auto">
               <CodeViewer content={streamB || 'Streaming tokens from Anthropic...'} language="markdown" />
             </div>
 
