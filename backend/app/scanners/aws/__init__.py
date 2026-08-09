@@ -15,6 +15,7 @@ from app.scanners.aws.lambda_scanner import AWSLambdaScanner
 from app.scanners.aws.waf import AWSWAFScanner
 from app.scanners.aws.cloudfront import AWSCloudFrontScanner
 from app.scanners.aws.dynamodb import AWSDynamoDBScanner
+from app.scanners.aws.elb import AWSELBScanner
 
 __all__ = [
     "AWSScanner",
@@ -34,4 +35,5 @@ __all__ = [
     "AWSWAFScanner",
     "AWSCloudFrontScanner",
     "AWSDynamoDBScanner",
+    "AWSELBScanner",
 ]

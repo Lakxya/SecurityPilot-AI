@@ -1,5 +1,5 @@
 from app.engine.scanner_registry import scanner_registry
-from app.scanners.aws import AWSScanner, AWSIAMScanner, AWSS3Scanner, AWSEC2Scanner, AWSCloudTrailScanner, AWSKMSScanner, AWSConfigScanner, AWSGuardDutyScanner, AWSSecurityHubScanner, AWSInspectorScanner, AWSECRScanner, AWSSecretsManagerScanner, AWSRDSScanner, AWSLambdaScanner, AWSWAFScanner, AWSCloudFrontScanner, AWSDynamoDBScanner
+from app.scanners.aws import AWSScanner, AWSIAMScanner, AWSS3Scanner, AWSEC2Scanner, AWSCloudTrailScanner, AWSKMSScanner, AWSConfigScanner, AWSGuardDutyScanner, AWSSecurityHubScanner, AWSInspectorScanner, AWSECRScanner, AWSSecretsManagerScanner, AWSRDSScanner, AWSLambdaScanner, AWSWAFScanner, AWSCloudFrontScanner, AWSDynamoDBScanner, AWSELBScanner
 from app.scanners.azure import AzureScanner
 from app.scanners.gcp import GCPScanner
 from app.scanners.docker import DockerScanner
@@ -29,6 +29,7 @@ def init_scanners():
     scanner_registry.register("aws_waf", AWSWAFScanner())
     scanner_registry.register("aws_cloudfront", AWSCloudFrontScanner())
     scanner_registry.register("aws_dynamodb", AWSDynamoDBScanner())
+    scanner_registry.register("aws_elb", AWSELBScanner())
     scanner_registry.register("azure_master", AzureScanner())
     scanner_registry.register("gcp_master", GCPScanner())
     scanner_registry.register("docker_master", DockerScanner())
