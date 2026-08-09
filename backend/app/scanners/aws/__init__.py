@@ -9,6 +9,7 @@ from app.scanners.aws.guardduty import AWSGuardDutyScanner
 from app.scanners.aws.securityhub import AWSSecurityHubScanner
 from app.scanners.aws.inspector import AWSInspectorScanner
 from app.scanners.aws.ecr import AWSECRScanner
+from app.scanners.aws.secretsmanager import AWSSecretsManagerScanner
 
 __all__ = [
     "AWSScanner",
@@ -22,4 +23,5 @@ __all__ = [
     "AWSSecurityHubScanner",
     "AWSInspectorScanner",
     "AWSECRScanner",
+    "AWSSecretsManagerScanner",
 ]
