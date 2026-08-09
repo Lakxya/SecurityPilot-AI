@@ -13,6 +13,7 @@ from app.scanners.aws.secretsmanager import AWSSecretsManagerScanner
 from app.scanners.aws.rds import AWSRDSScanner
 from app.scanners.aws.lambda_scanner import AWSLambdaScanner
 from app.scanners.aws.waf import AWSWAFScanner
+from app.scanners.aws.cloudfront import AWSCloudFrontScanner
 
 __all__ = [
     "AWSScanner",
@@ -30,4 +31,5 @@ __all__ = [
     "AWSRDSScanner",
     "AWSLambdaScanner",
     "AWSWAFScanner",
+    "AWSCloudFrontScanner",
 ]
