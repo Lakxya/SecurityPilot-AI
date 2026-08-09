@@ -11,6 +11,7 @@ from app.scanners.aws.inspector import AWSInspectorScanner
 from app.scanners.aws.ecr import AWSECRScanner
 from app.scanners.aws.secretsmanager import AWSSecretsManagerScanner
 from app.scanners.aws.rds import AWSRDSScanner
+from app.scanners.aws.lambda_scanner import AWSLambdaScanner
 
 __all__ = [
     "AWSScanner",
@@ -26,4 +27,5 @@ __all__ = [
     "AWSECRScanner",
     "AWSSecretsManagerScanner",
     "AWSRDSScanner",
+    "AWSLambdaScanner",
 ]
