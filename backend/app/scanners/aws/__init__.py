@@ -19,6 +19,7 @@ from app.scanners.aws.elb import AWSELBScanner
 from app.scanners.aws.opensearch import AWSOpenSearchScanner
 from app.scanners.aws.apigateway import AWSAPIGatewayScanner
 from app.scanners.aws.snssqs import AWSSNSQSScanner
+from app.scanners.aws.ecseks import AWSECSEKSScanner
 
 __all__ = [
     "AWSScanner",
@@ -42,4 +43,5 @@ __all__ = [
     "AWSOpenSearchScanner",
     "AWSAPIGatewayScanner",
     "AWSSNSQSScanner",
+    "AWSECSEKSScanner",
 ]
