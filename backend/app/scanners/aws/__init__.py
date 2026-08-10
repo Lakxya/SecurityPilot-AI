@@ -18,6 +18,7 @@ from app.scanners.aws.dynamodb import AWSDynamoDBScanner
 from app.scanners.aws.elb import AWSELBScanner
 from app.scanners.aws.opensearch import AWSOpenSearchScanner
 from app.scanners.aws.apigateway import AWSAPIGatewayScanner
+from app.scanners.aws.snssqs import AWSSNSQSScanner
 
 __all__ = [
     "AWSScanner",
@@ -40,4 +41,5 @@ __all__ = [
     "AWSELBScanner",
     "AWSOpenSearchScanner",
     "AWSAPIGatewayScanner",
+    "AWSSNSQSScanner",
 ]
